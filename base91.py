@@ -66,17 +66,27 @@ def base91_encode(bytstr):
     '''
     Take a byte-string, and encode it in base 91
 
+    >>> base91_encode("")
+    '~'
     >>> base91_encode("\\x00")
-    '!!~'
+    '!!'
     >>> base91_encode("\x01")
-    '!B~'
+    '!B'
+    >>> base91_encode("\xff")
+    '|_'
     >>> base91_encode("aa")
     'D8-9~'
     >>> base91_encode("aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
     '''
+    # always encode *something*, in case we need to avoid empty strings
     if not bytstr:
         return '~'
+    # check if we need a lop char at the end
+    lop = False
+    if (8 * (len(bytstr) + 1) <
+        13 * min(x for x in range(len(bytstr)+1) if 13*x >= 8*len(bytstr))):
+        lop = True
     # prime the pump
     bitstr = '{:08b}'.format(ord(bytstr[0]))
     bytstr = bytstr[1:]
@@ -94,12 +104,43 @@ def base91_encode(bytstr):
         i = int(bitstr, 2)
         resstr += base91_chr(i / 91)
         resstr += base91_chr(i % 91)
+    if lop:
         resstr += '~'
     return resstr
 
-def base92_decode(bstr):
+import math
+def base91_decode(bstr):
     '''
+    Take a base91 encoded string, convert it back to a byte-string
+
+    >>> base91_decode("")
+    ''
+    >>> base91_decode("~")
+    ''
+    >>> base91_decode("!!")
+    '\\x00'
+    >>> base91_decode("!B")
+    '\\x01'
+    >>> base91_decode("|_")
+    '\\xff'
+    >>> base91_decode("D8-9~")
+    'aa'
+    >>> base91_decode("D81RPya.)hgNA(%s")
+    'aaaaaaaaaaaaa'
     '''
+    bitstr = ''
+    resstr = ''
+    # we always have pairs of characters
+    for i in range(len(bstr)/2):
+        x = base91_ord(bstr[2*i])*91 + base91_ord(bstr[2*i+1])
+        bitstr += "{:013b}".format(x)
+        while 8 <= len(bitstr):
+            resstr += chr(int(bitstr[0:8], 2))
+            bitstr = bitstr[8:]
+    # check if we have a lop char
+    if bstr[-1] == '~':
+        resstr = resstr[:-1]
+    return resstr
 
 if __name__ == "__main__":
     import doctest
