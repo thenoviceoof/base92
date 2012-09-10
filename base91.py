@@ -1,8 +1,9 @@
-# BEERWARE LICENSE
 '''
-base91: a library
+base91: a library for encoding things
+
+BEERWARE LICENSE
 '''
-__version__ = (0, 0, 0)
+__version__ = (0, 0, 1)
 
 def base91_chr(val):
     '''
@@ -23,8 +24,6 @@ def base91_chr(val):
         ...
     ValueError: val must be in [0, 91)
     '''
-    if not isinstance(val, int):
-        val = ord(val)
     if val < 0 or val >= 91:
         raise ValueError('val must be in [0, 91)')
     if val == 0:
@@ -36,7 +35,32 @@ def base91_chr(val):
 
 def base91_ord(val):
     '''
+    Map a char to an integer
+
+    >>> base91_ord('!')
+    0
+    >>> base91_ord('#')
+    1
+    >>> base91_ord('_')
+    61
+    >>> base91_ord('a')
+    62
+    >>> base91_ord('}')
+    90
+    >>> base91_ord(' ')
+    Traceback (most recent call last):
+        ...
+    ValueError: val is not a base91 character
     '''
+    num = ord(val)
+    if val == '!':
+        return 0
+    elif ord('#') <= num and num <= ord('_'):
+        return num - ord('#') + 1
+    elif ord('a') <= num and num <= ord('}'):
+        return num - ord('a') + 62
+    else:
+        raise ValueError('val is not a base91 character')
 
 def base91_encode(bytstr):
     '''
