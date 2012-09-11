@@ -7,6 +7,17 @@
 '''
 base91: a library for encoding things
 
+>>> x = encode('hello world')
+>>> x
+'Fc_$aOTdKnsM#+'
+>>> decode(x)
+'hello world'
+
+>>> y = encode('^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
+>>> y
+"C=i.w6'IvB/viUpRAw25"
+>>> decode(y)
+'^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
 '''
 __version__ = (0, 0, 1)
 
@@ -81,6 +92,8 @@ def base91_encode(bytstr):
     '|_'
     >>> base91_encode("aa")
     'D8-9~'
+    >>> base91_encode("hello world")
+    'Fc_$aOTdKnsM#+'
     >>> base91_encode("aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
     '''
@@ -130,6 +143,8 @@ def base91_decode(bstr):
     '\\xff'
     >>> base91_decode("D8-9~")
     'aa'
+    >>> base91_decode('Fc_$aOTdKnsM#+')
+    'hello world'
     >>> base91_decode("D81RPya.)hgNA(%s")
     'aaaaaaaaaaaaa'
     '''
