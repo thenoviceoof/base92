@@ -158,7 +158,7 @@ def base91_decode(bstr):
             resstr += chr(int(bitstr[0:8], 2))
             bitstr = bitstr[8:]
     # check if we have a lop char
-    if bstr[-1] == '~':
+    if bstr and bstr[-1] == '~':
         resstr = resstr[:-1]
     return resstr
 
