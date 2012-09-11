@@ -49,11 +49,13 @@ BENCHMARKS
 --------------------------------------------------------------------------------
 On average, characters saved:
   For string lengths 1-32:
+
     base64-base92 | base85-base92
     -----------------------------
     1.677           -0.645
 
   For string lengths 1-128:
+
     base64-base92 | base85-base92
     -----------------------------
     6.590           0.291
