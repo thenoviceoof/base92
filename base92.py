@@ -166,7 +166,10 @@ def base92_decode(bstr):
     return resstr
 
 encode = base92_encode
+b92encode = base92_encode
+
 decode = base92_decode
+b92decode = base92_decode
 
 if __name__ == "__main__":
     import doctest
