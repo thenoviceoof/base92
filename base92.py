@@ -9,15 +9,18 @@ base92: a library for encoding byte strings
 
 >>> x = encode('hello world')
 >>> x
-'Fc_$aOTdKnsM#+'
+'Fc_$aOTdKnsM*k'
 >>> decode(x)
 'hello world'
 
 >>> y = encode('^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
 >>> y
-"C=i.w6'IvB/viUpRAw25"
+"C=i.w6'IvB/viUpRAwco"
 >>> decode(y)
 '^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
+
+>>> decode(encode('aoeuaoeuaoeu'))
+'aoeuaoeuaoeu'
 '''
 
 import math
@@ -95,8 +98,6 @@ def base92_encode(bytstr):
     '|_'
     >>> base92_encode("aa")
     'D8-9~'
-    >>> base92_encode("hello world")
-    'Fc_$aOTdKnsM#+'
     >>> base92_encode("aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
     '''
@@ -105,21 +106,23 @@ def base92_encode(bytstr):
         return '~'
     # check if we need a lop char at the end
     lop = False
-    if (8 * (len(bytstr) + 1) <
+    if (8 * (len(bytstr) + 1) <=
         13 * min(x for x in range(len(bytstr)+1) if 13*x >= 8*len(bytstr))):
         lop = True
     # prime the pump
-    bitstr = '{:08b}'.format(ord(bytstr[0]))
-    bytstr = bytstr[1:]
+    bitstr = ''
+    while len(bitstr) < 13 and bytstr:
+        bitstr += '{:08b}'.format(ord(bytstr[0]))
+        bytstr = bytstr[1:]
     resstr = ''
-    while len(bytstr):
-        while len(bitstr) < 13 and bytstr:
-            bitstr += '{:08b}'.format(ord(bytstr[0]))
-            bytstr = bytstr[1:]
+    while len(bitstr) > 13 or bytstr:
         i = int(bitstr[:13], 2)
         resstr += base92_chr(i / 91)
         resstr += base92_chr(i % 91)
         bitstr = bitstr[13:]
+        while len(bitstr) < 13 and bytstr:
+            bitstr += '{:08b}'.format(ord(bytstr[0]))
+            bytstr = bytstr[1:]
     if bitstr:
         bitstr += '0' * (13 - len(bitstr))
         i = int(bitstr, 2)
@@ -145,8 +148,6 @@ def base92_decode(bstr):
     '\\xff'
     >>> base92_decode("D8-9~")
     'aa'
-    >>> base92_decode('Fc_$aOTdKnsM#+')
-    'hello world'
     >>> base92_decode("D81RPya.)hgNA(%s")
     'aaaaaaaaaaaaa'
     '''
