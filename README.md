@@ -11,8 +11,8 @@ Fire up your favorite python:
     >>> import base92
     >>> base92.decode(base92.encode('hello world'))
     'hello world'
-    >>> base92.b92encode('goodbye')
-    'FCv^U27A6'
+    >>> base92.b92encode('\x61\xf2\x05\x99\x42')
+    'DJ8gER!'
 
 
 DESIGN DECISIONS
