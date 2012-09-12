@@ -25,7 +25,7 @@ base92: a library for encoding byte strings
 
 import math
 
-__version__ = (0, 0, 1)
+__version__ = (0, 1, 0)
 
 def base92_chr(val):
     '''
@@ -97,18 +97,13 @@ def base92_encode(bytstr):
     >>> base92_encode("\xff")
     '|_'
     >>> base92_encode("aa")
-    'D8-9~'
+    'D8*'
     >>> base92_encode("aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
     '''
     # always encode *something*, in case we need to avoid empty strings
     if not bytstr:
         return '~'
-    # check if we need a lop char at the end
-    lop = False
-    if (8 * (len(bytstr) + 1) <=
-        13 * min(x for x in range(len(bytstr)+1) if 13*x >= 8*len(bytstr))):
-        lop = True
     # prime the pump
     bitstr = ''
     while len(bitstr) < 13 and bytstr:
@@ -124,12 +119,14 @@ def base92_encode(bytstr):
             bitstr += '{:08b}'.format(ord(bytstr[0]))
             bytstr = bytstr[1:]
     if bitstr:
-        bitstr += '0' * (13 - len(bitstr))
-        i = int(bitstr, 2)
-        resstr += base92_chr(i / 91)
-        resstr += base92_chr(i % 91)
-    if lop:
-        resstr += '~'
+        if len(bitstr) < 7:
+            bitstr += '0' * (6 - len(bitstr))
+            resstr += base92_chr(int(bitstr,2))
+        else:
+            bitstr += '0' * (13 - len(bitstr))
+            i = int(bitstr, 2)
+            resstr += base92_chr(i / 91)
+            resstr += base92_chr(i % 91)
     return resstr
 
 def base92_decode(bstr):
@@ -146,23 +143,29 @@ def base92_decode(bstr):
     '\\x01'
     >>> base92_decode("|_")
     '\\xff'
-    >>> base92_decode("D8-9~")
+    >>> base92_decode("D8*")
     'aa'
     >>> base92_decode("D81RPya.)hgNA(%s")
     'aaaaaaaaaaaaa'
     '''
     bitstr = ''
     resstr = ''
+    if bstr == '~':
+        return ''
     # we always have pairs of characters
     for i in range(len(bstr)/2):
         x = base92_ord(bstr[2*i])*91 + base92_ord(bstr[2*i+1])
-        bitstr += "{:013b}".format(x)
+        bitstr += '{:013b}'.format(x)
         while 8 <= len(bitstr):
             resstr += chr(int(bitstr[0:8], 2))
             bitstr = bitstr[8:]
-    # check if we have a lop char
-    if bstr and bstr[-1] == '~':
-        resstr = resstr[:-1]
+    # if we have an extra char, check for extras
+    if len(bstr) % 2 == 1:
+        x = base92_ord(bstr[-1])
+        bitstr += '{:06b}'.format(x)
+        while 8 <= len(bitstr):
+            resstr += chr(int(bitstr[0:8], 2))
+            bitstr = bitstr[8:]
     return resstr
 
 encode = base92_encode
