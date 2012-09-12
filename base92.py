@@ -178,6 +178,16 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
+    ## more correctness tests
+    import hashlib
+    import random
+    def gen_bytes(s):
+        return hashlib.sha512(s).digest()[:random.randint(1,64)]
+    for i in range(10000):
+        s = gen_bytes(str(random.random()))
+        assert s == decode(encode(s))
+    print('correctness spot check passed')
+
     ## size tests
     # import base64
     # import base85
