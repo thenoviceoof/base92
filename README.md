@@ -68,3 +68,7 @@ On average, characters saved:
 
 Here, we see that base92 strictly wins in size over base64 and base85,
 as is expected with a higher bit density encoding.
+
+There are no speed benchmarks, because this is a pure python
+implementation and I wouldn't want to benchmark anything that's not a
+native C library.
