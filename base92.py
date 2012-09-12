@@ -19,13 +19,14 @@ base92: a library for encoding byte strings
 >>> decode(y)
 '^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
 
+this is a regression test
 >>> decode(encode('aoeuaoeuaoeu'))
 'aoeuaoeuaoeu'
 '''
 
 import math
 
-__version__ = (0, 1, 0)
+__version__ = (0, 1, 1)
 
 def base92_chr(val):
     '''
@@ -100,10 +101,16 @@ def base92_encode(bytstr):
     'D8*'
     >>> base92_encode("aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
+    >>> base92_encode([16,32,48])
+    "'_$,"
     '''
     # always encode *something*, in case we need to avoid empty strings
     if not bytstr:
         return '~'
+    # make sure we have a bytstr
+    if not isinstance(bytstr, basestring):
+        # we'll assume it's a sequence of ints
+        bytstr = ''.join([chr(b) for b in bytstr])
     # prime the pump
     bitstr = ''
     while len(bitstr) < 13 and bytstr:
