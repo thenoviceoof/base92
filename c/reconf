@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "### Running aclocal..."
+aclocal
+echo "### Running autoconf..."
+autoconf
+echo "### Running automake..."
+automake -a
+echo "### Running ./configure..."
+./configure
+echo "### Running make..."
+make

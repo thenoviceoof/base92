@@ -8,3 +8,6 @@ Makefile.in
 aclocal.m4
 autom4te.cache
 .deps
+base92
+src/base92
+src/libbase92.a

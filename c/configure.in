@@ -1,5 +1,7 @@
-AC_INIT(base92.c)
-AM_INIT_AUTOMAKE(base92,0.1)
+AC_INIT([base92], [0.1], [Nathan Hwang <thenoviceoof>])
+AM_INIT_AUTOMAKE
 AC_PROG_CC
 AC_PROG_INSTALL
-AC_OUTPUT(Makefile)
+AC_PROG_RANLIB
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT
