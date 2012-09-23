@@ -11,4 +11,4 @@ autom4te.cache
 base92
 src/base92
 src/libbase92.a
-src/test
+tests/test_empty

@@ -9,3 +9,5 @@ echo "### Running ./configure..."
 ./configure
 echo "### Running make..."
 make
+echo "### Running make check..."
+make check

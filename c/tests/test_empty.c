@@ -4,8 +4,12 @@
 // think this stuff is worth it, you can buy me a beer in return
 // - Nathan Hwang (thenoviceoof)
 
-// eventually: speed!
-// char encode_mapping[] = {};
+#include <base92.h>
+
 int main() {
+        if(strcmp(base92encode(""), "~") != 0)
+                exit(1);
+        if(strcmp(base92decode(""), "") != 0)
+                exit(1);
         return 0;
 }
