@@ -1,11 +1,20 @@
 base92
 ================================================================================
-A little python library for encoding byte-strings into strings easily
+A little library for encoding byte-strings into strings easily
 typeable on a standard US 101-key keyboard.
 
 
 USAGE
 --------------------------------------------------------------------------------
+
+### C ###
+
+    #include <base92/base92.h>
+    ...
+    base92encode("hello world") == "Fc_$aOTdKnsM*k"
+    ...
+
+### Python ###
 Fire up your favorite python:
 
     >>> import base92
@@ -72,3 +81,12 @@ as is expected with a higher bit density encoding.
 There are no speed benchmarks, because this is a pure python
 implementation and I wouldn't want to benchmark anything that's not a
 native C library.
+
+
+LICENSE
+--------------------------------------------------------------------------------
+THE BEERWARE LICENSE (Revision 42):
+<thenoviceoof> wrote this file. As long as you retain this notice you
+can do whatever you want with this stuff. If we meet some day, and you
+think this stuff is worth it, you can buy me a beer in return
+- Nathan Hwang (thenoviceoof)
