@@ -11,4 +11,8 @@ autom4te.cache
 base92
 src/base92
 src/libbase92.a
+
 tests/test_empty
+tests/hello_world
+tests/binary_string
+tests/lengths
