@@ -4,22 +4,8 @@
 // think this stuff is worth it, you can buy me a beer in return
 // - Nathan Hwang (thenoviceoof)
 
-#include <stdlib.h>
-
 // eventually: speed!
 // char encode_mapping[] = {};
-char base92chr_encode(char byt) {
-        return byt;
-}
-
-char base92chr_decode(char byt) {
-        return byt;
-}
-
-char* base92encode(char* str) {
-        return NULL;
-}
-
-char* base92decode(char* str) {
-        return NULL;
+int main() {
+        return 0;
 }
