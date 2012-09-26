@@ -16,3 +16,5 @@ tests/test_empty
 tests/hello_world
 tests/binary_string
 tests/lengths
+tests/chr_encode
+tests/chr_decode
