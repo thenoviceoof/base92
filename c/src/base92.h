@@ -11,12 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-char base92chr_encode(char byt);
+unsigned char base92chr_encode(unsigned char byt);
 
-char base92chr_decode(char byt);
+unsigned char base92chr_decode(unsigned char byt);
 
-char* base92encode(char* str);
+unsigned char* base92encode(unsigned char* str);
 
-char* base92decode(char* str);
+unsigned char* base92decode(unsigned char* str);
 
 #endif
