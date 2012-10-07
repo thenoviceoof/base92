@@ -94,14 +94,12 @@ unsigned char* base92encode(unsigned char* str, int len) {
         } else {
                 size = 2 * ((len * 8) / 13) + 2;
         }
-        printf("size: %d\n", size);
         // do the malloc, add space for a null byte
-        res = (char*)malloc(sizeof(char) * (size + 1));
+        res = (unsigned char*)malloc(sizeof(char) * (size + 1));
         workspace = 0;
         wssize = 0;
         j = 0;
         for (i = 0; i < len; i++) {
-                printf("i: %d, j: %d\n", i, j);
                 workspace = workspace << 8 | str[i];
                 wssize += 8;
                 if (wssize >= 13) {
@@ -155,6 +153,53 @@ unsigned char* base92encode(unsigned char* str, int len) {
         return res;
 }
 
-unsigned char* base92decode(unsigned char* str) {
-        return "";
+// this guy expects a null-terminated string
+// gives back a non-null terminated string, and properly filled len
+unsigned char* base92decode(unsigned char* str, int* len) {
+        int i, j, b1, b2;
+        int size;
+        unsigned char* res;
+        unsigned long workspace;
+        unsigned short wssize;
+        size = strlen(str);
+        if (strlen(str) < 2) {
+                res = NULL;
+        }
+        // handle small cases first
+        if (strcmp(str, "~") == 0 || strlen(str) == 0) {
+                return res;
+        }
+        // calculate size
+        *len = ((size/2 * 13) + (size % 2) * 6) % 8;
+        if (*len == 0) {
+                *len = ((size/2 * 13) + (size % 2) * 6) / 8;
+        } else {
+                *len = ((size/2 * 13) + (size % 2) * 6) / 8 + 1;
+        }
+        res = (unsigned char *)malloc(sizeof(char) * (*len));
+        // handle pairs of chars
+        workspace = 0;
+        wssize = 0;
+        for (i = 0; i < size; i += 2) {
+                b1 = base92chr_decode(str[i]);
+                b2 = base92chr_decode(str[i+1]);
+                workspace = (workspace << 13) | (b1 * 91 + b2);
+                wssize += 13;
+                while (wssize >= 8) {
+                        res[j++] = workspace & 255;  // b{8} bitmask
+                        workspace = workspace >> 8;
+                        wssize -= 8;
+                }
+        }
+        // handle single char
+        if (size % 2 == 1) {
+                workspace = (workspace << 6) | base92chr_decode(str[size - 1]);
+                wssize += 6;
+                while (wssize >= 8) {
+                        res[j++] = workspace & 255;  // b{8} bitmask
+                        workspace = workspace >> 8;
+                        wssize -= 8;
+                }
+        }
+        return res;
 }
