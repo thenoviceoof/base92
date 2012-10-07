@@ -104,6 +104,7 @@ unsigned char* base92encode(unsigned char* str, int len) {
                 wssize += 8;
                 if (wssize >= 13) {
                         tmp = (workspace >> (wssize - 13)) & 8191;
+                        // printf("bd: %d\n", tmp);
                         c = base92chr_encode(tmp / 91);
                         if (c == 0) {
                                 // do something, illegal character
@@ -186,8 +187,7 @@ unsigned char* base92decode(unsigned char* str, int* len) {
                 workspace = (workspace << 13) | (b1 * 91 + b2);
                 wssize += 13;
                 while (wssize >= 8) {
-                        res[j++] = workspace & 255;  // b{8} bitmask
-                        workspace = workspace >> 8;
+                        res[j++] = (workspace >> (wssize - 8)) & 255;
                         wssize -= 8;
                 }
         }
@@ -196,8 +196,7 @@ unsigned char* base92decode(unsigned char* str, int* len) {
                 workspace = (workspace << 6) | base92chr_decode(str[size - 1]);
                 wssize += 6;
                 while (wssize >= 8) {
-                        res[j++] = workspace & 255;  // b{8} bitmask
-                        workspace = workspace >> 8;
+                        res[j++] = (workspace >> (wssize - 8)) & 255;
                         wssize -= 8;
                 }
         }
