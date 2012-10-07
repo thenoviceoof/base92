@@ -6,6 +6,8 @@
 
 #include <base92.h>
 
+#include <stdio.h>
+
 unsigned char ENCODE_MAPPING[256] = (unsigned char[]){
         33, 35, 36, 37, 38, 39, 40, 41, 42, 43,
         44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
@@ -98,18 +100,18 @@ unsigned char* base92encode(unsigned char* str, int len) {
         wssize = 0;
         j = 0;
         for (i = 0; i < len; i++) {
-                workspace |= str[i] << wssize;
+                workspace = workspace << 8 | str[i];
                 wssize += 8;
                 while (j >= 13) {
                         tmp = workspace & 8191;  // 0b1{13} bitmask
-                        c = base92chr_encode(tmp % 91);
+                        c = base92chr_encode(tmp / 91);
                         if (c == 0) {
                                 // do something, illegal character
                                 free(res);
                                 return NULL;
                         }
                         res[j++] = c;
-                        c = base92chr_encode(tmp / 91);
+                        c = base92chr_encode(tmp % 91);
                         if (c == 0) {
                                 // do something, illegal character
                                 free(res);
@@ -120,6 +122,7 @@ unsigned char* base92encode(unsigned char* str, int len) {
                         wssize -= 13;
                 }
         }
+        printf("tmp: %d\n", wssize);
         // encode a last byte
         if (0 < wssize && wssize < 7) {
                 tmp = workspace & 63;  // 0b1{6} bitmask
@@ -132,14 +135,15 @@ unsigned char* base92encode(unsigned char* str, int len) {
                 res[j] = c;
         } else if (7 <= wssize) {
                 tmp = workspace & 8191;  // 0b1{13} bitmask
-                c = base92chr_encode(tmp % 91);
+                printf("ttmp: %d\n", tmp);
+                c = base92chr_encode(tmp / 91);
                 if (c == 0) {
                         // do something, illegal character
                         free(res);
                         return NULL;
                 }
                 res[j++] = c;
-                c = base92chr_encode(tmp / 91);
+                c = base92chr_encode(tmp % 91);
                 if (c == 0) {
                         // do something, illegal character
                         free(res);
