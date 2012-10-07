@@ -58,6 +58,9 @@ mapping a small integer of bytes onto another small integer of
 bytes. base92 maps 13 bytes to 16 characters, which is better than
 base85's 4 to 5 from a size perspective, but is fairly inelegant.
 
+We also follow base85's convention of using the high divisor product
+as the first bytes.
+
 
 BENCHMARKS
 --------------------------------------------------------------------------------
