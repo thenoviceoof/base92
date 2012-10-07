@@ -1,6 +1,6 @@
 INCLUDES = -I$(top_srcdir)/src
 
-check_PROGRAMS = test_empty chr_encode chr_decode simple_test hello_world binary_string lengths
+check_PROGRAMS = test_empty chr_encode chr_decode simple_test onechar_test hello_world binary_string lengths
 
 TESTS = $(check_PROGRAMS)
 
@@ -19,6 +19,10 @@ chr_decode_LDADD = -lbase92
 simple_test_SOURCES = simple_test.c
 simple_test_LDFLAGS = -L$(top_srcdir)/src
 simple_test_LDADD = -lbase92
+
+onechar_test_SOURCES = onechar_test.c
+onechar_test_LDFLAGS = -L$(top_srcdir)/src
+onechar_test_LDADD = -lbase92
 
 hello_world_SOURCES = hello_world.c
 hello_world_LDFLAGS = -L$(top_srcdir)/src
