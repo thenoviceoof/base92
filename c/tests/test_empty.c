@@ -5,11 +5,17 @@
 // - Nathan Hwang (thenoviceoof)
 
 #include <base92.h>
+#include <utils.h>
 
 int main() {
+        int i;
+        unsigned char *s;
+
         if(strcmp(base92encode("", 0), "~") != 0)
                 exit(1);
-        if(strcmp(base92decode(""), "") != 0)
+
+        s = base92decode("~", &i);
+        if(strcmp(stringify(s, i), "") != 0)
                 exit(1);
         return 0;
 }

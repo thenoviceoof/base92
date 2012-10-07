@@ -5,9 +5,12 @@
 // - Nathan Hwang (thenoviceoof)
 
 #include <base92.h>
+#include <utils.h>
 
 int main() {
-        char *str = (char*)malloc(16*sizeof(char));
+        int i;
+        unsigned char *s;
+        unsigned char *str = (char*)malloc(16*sizeof(char));
         str[0] = 182;
         str[1] = 59;
         str[2] = 187;
@@ -24,9 +27,11 @@ int main() {
         str[13] = 205;
         str[14] = 195;
         str[15] = 0;
+
         if(strcmp(base92encode(str, 15), "c)L#O2K}%8Vo_OM3kB:") != 0)
                 exit(1);
-        if(strcmp(base92decode("c)L#O2K}%8Vo_OM3kB:"), str) != 0)
+        s = base92decode("c)L#O2K}%8Vo_OM3kB:", &i);
+        if(strcmp(stringify(s, i), str) != 0)
                 exit(1);
         return 0;
 }

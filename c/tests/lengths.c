@@ -5,13 +5,14 @@
 // - Nathan Hwang (thenoviceoof)
 
 #include <base92.h>
+#include <utils.h>
 
 LEN = 13;
 
 int main() {
         char **strs;
-        char *str;
-        int i;
+        char *str, *s;
+        int i, j;
         
         strs = (char**)malloc(LEN*sizeof(char*));
         strs[0] = "D";
@@ -36,7 +37,8 @@ int main() {
                 str[i+1] = 0;
                 if(strcmp(base92encode(str, i + 1), strs[i]) != 0)
                         exit(1);
-                if(strcmp(base92decode(strs[i]), str) != 0)
+                s = base92decode(strs[i], &j);
+                if(strcmp(stringify(s, j), str) != 0)
                         exit(1);
         }
         return 0;
