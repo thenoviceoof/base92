@@ -119,21 +119,19 @@ def base92_encode(bytstr):
     resstr = ''
     while len(bitstr) > 13 or bytstr:
         i = int(bitstr[:13], 2)
-        resstr += base92_chr(i / 91)
         resstr += base92_chr(i % 91)
+        resstr += base92_chr(i / 91)
         bitstr = bitstr[13:]
         while len(bitstr) < 13 and bytstr:
             bitstr += '{:08b}'.format(ord(bytstr[0]))
             bytstr = bytstr[1:]
     if bitstr:
         if len(bitstr) < 7:
-            bitstr += '0' * (6 - len(bitstr))
             resstr += base92_chr(int(bitstr,2))
         else:
-            bitstr += '0' * (13 - len(bitstr))
             i = int(bitstr, 2)
-            resstr += base92_chr(i / 91)
             resstr += base92_chr(i % 91)
+            resstr += base92_chr(i / 91)
     return resstr
 
 def base92_decode(bstr):
