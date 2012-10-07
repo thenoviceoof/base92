@@ -28,13 +28,13 @@ int main() {
         strs[11] = "D81RPya.)hgNA($";
         strs[12] = "D81RPya.)hgNA(%s";
 
-        str = (char*)malloc((LEN+1)*sizeof(char));
+        str = (char*)malloc((LEN)*sizeof(char));
         str[0] = 0;
 
         for(i = 0; i < LEN; i++) {
                 str[i] = 'a';
                 str[i+1] = 0;
-                if(strcmp(base92encode(str), strs[i]) != 0)
+                if(strcmp(base92encode(str, i + 1), strs[i]) != 0)
                         exit(1);
                 if(strcmp(base92decode(strs[i]), str) != 0)
                         exit(1);

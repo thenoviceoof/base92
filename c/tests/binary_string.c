@@ -24,7 +24,7 @@ int main() {
         str[13] = 205;
         str[14] = 195;
         str[15] = 0;
-        if(strcmp(base92encode(str), "C=i.w6'IvB/viUpRAwco") != 0)
+        if(strcmp(base92encode(str, 15), "C=i.w6'IvB/viUpRAwco") != 0)
                 exit(1);
         if(strcmp(base92decode("C=i.w6'IvB/viUpRAwco"), str) != 0)
                 exit(1);

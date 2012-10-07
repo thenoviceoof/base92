@@ -71,10 +71,10 @@ unsigned char base92chr_decode(unsigned char byt) {
         return DECODE_MAPPING[byt];
 }
 
-unsigned char* base92encode(unsigned char* str) {
+unsigned char* base92encode(unsigned char* str, int len) {
         return "~";
 }
 
-unsigned char* base92decode(unsigned char* str) {
+unsigned char* base92decode(unsigned char* str, int len) {
         return "";
 }

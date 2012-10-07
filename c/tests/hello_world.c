@@ -7,7 +7,7 @@
 #include <base92.h>
 
 int main() {
-        if(strcmp(base92encode("hello world"), "Fc_$aOTdKnsM*k") != 0)
+        if(strcmp(base92encode("hello world", 11), "Fc_$aOTdKnsM*k") != 0)
                 exit(1);
         if(strcmp(base92decode("Fc_$aOTdKnsM*k"), "hello world") != 0)
                 exit(1);
