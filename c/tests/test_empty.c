@@ -7,7 +7,7 @@
 #include <base92.h>
 
 int main() {
-        if(strcmp(base92encode(""), "~") != 0)
+        if(strcmp(base92encode("", 0), "~") != 0)
                 exit(1);
         if(strcmp(base92decode(""), "") != 0)
                 exit(1);
