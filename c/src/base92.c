@@ -88,29 +88,24 @@ unsigned char* base92encode(unsigned char* str, int len) {
         // precalculate how much space we need to malloc
         size = (len * 8) % 13;
         if (size == 0) {
-                size = ((len * 8) / 13);
+                size = 2 * ((len * 8) / 13);
         } else if (size < 7) {
-                size = ((len * 8) / 13) + 1;
+                size = 2 * ((len * 8) / 13) + 1;
         } else {
-                size = ((len * 8) / 13) + 2;
+                size = 2 * ((len * 8) / 13) + 2;
         }
+        printf("size: %d\n", size);
         // do the malloc, add space for a null byte
         res = (char*)malloc(sizeof(char) * (size + 1));
         workspace = 0;
         wssize = 0;
         j = 0;
         for (i = 0; i < len; i++) {
+                printf("i: %d, j: %d\n", i, j);
                 workspace = workspace << 8 | str[i];
                 wssize += 8;
-                if (j >= 13) {
-                        tmp = workspace >> (wssize - 13);  // 0b1{13} bitmask
-                        c = base92chr_encode(tmp % 91);
-                        if (c == 0) {
-                                // do something, illegal character
-                                free(res);
-                                return NULL;
-                        }
-                        res[j++] = c;
+                if (wssize >= 13) {
+                        tmp = (workspace >> (wssize - 13)) & 8191;
                         c = base92chr_encode(tmp / 91);
                         if (c == 0) {
                                 // do something, illegal character
@@ -118,15 +113,20 @@ unsigned char* base92encode(unsigned char* str, int len) {
                                 return NULL;
                         }
                         res[j++] = c;
-                        j += 2;
+                        c = base92chr_encode(tmp % 91);
+                        if (c == 0) {
+                                // do something, illegal character
+                                free(res);
+                                return NULL;
+                        }
+                        res[j++] = c;
                         wssize -= 13;
                 }
         }
-        printf("tmp: %d\n", wssize);
         // encode a last byte
         if (0 < wssize && wssize < 7) {
-                tmp = workspace & 63;  // 0b1{6} bitmask
-                c = base92chr_encode(tmp % 91);
+                tmp = (workspace << (6 - wssize)) & 63;  // pad the right side
+                c = base92chr_encode(tmp);
                 if (c == 0) {
                         // do something, illegal character
                         free(res);
@@ -134,15 +134,7 @@ unsigned char* base92encode(unsigned char* str, int len) {
                 }
                 res[j] = c;
         } else if (7 <= wssize) {
-                tmp = workspace & 8191;  // 0b1{13} bitmask
-                printf("ttmp: %d\n", tmp);
-                c = base92chr_encode(tmp % 91);
-                if (c == 0) {
-                        // do something, illegal character
-                        free(res);
-                        return NULL;
-                }
-                res[j++] = c;
+                tmp = (workspace << (13 - wssize)) & 8191; // pad the right side
                 c = base92chr_encode(tmp / 91);
                 if (c == 0) {
                         // do something, illegal character
@@ -150,6 +142,13 @@ unsigned char* base92encode(unsigned char* str, int len) {
                         return NULL;
                 }
                 res[j++] = c;
+                c = base92chr_encode(tmp % 91);
+                if (c == 0) {
+                        // do something, illegal character
+                        free(res);
+                        return NULL;
+                }
+                res[j] = c;
         }
         // add the null byte
         res[size] = 0;
