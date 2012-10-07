@@ -102,16 +102,16 @@ unsigned char* base92encode(unsigned char* str, int len) {
         for (i = 0; i < len; i++) {
                 workspace = workspace << 8 | str[i];
                 wssize += 8;
-                while (j >= 13) {
-                        tmp = workspace & 8191;  // 0b1{13} bitmask
-                        c = base92chr_encode(tmp / 91);
+                if (j >= 13) {
+                        tmp = workspace >> (wssize - 13);  // 0b1{13} bitmask
+                        c = base92chr_encode(tmp % 91);
                         if (c == 0) {
                                 // do something, illegal character
                                 free(res);
                                 return NULL;
                         }
                         res[j++] = c;
-                        c = base92chr_encode(tmp % 91);
+                        c = base92chr_encode(tmp / 91);
                         if (c == 0) {
                                 // do something, illegal character
                                 free(res);
@@ -136,14 +136,14 @@ unsigned char* base92encode(unsigned char* str, int len) {
         } else if (7 <= wssize) {
                 tmp = workspace & 8191;  // 0b1{13} bitmask
                 printf("ttmp: %d\n", tmp);
-                c = base92chr_encode(tmp / 91);
+                c = base92chr_encode(tmp % 91);
                 if (c == 0) {
                         // do something, illegal character
                         free(res);
                         return NULL;
                 }
                 res[j++] = c;
-                c = base92chr_encode(tmp % 91);
+                c = base92chr_encode(tmp / 91);
                 if (c == 0) {
                         // do something, illegal character
                         free(res);
