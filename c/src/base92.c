@@ -72,6 +72,9 @@ unsigned char base92chr_decode(unsigned char byt) {
 }
 
 unsigned char* base92encode(unsigned char* str, int len) {
+        if (len == 0) {
+                return "~";
+        }
         return "~";
 }
 
