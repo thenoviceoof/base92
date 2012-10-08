@@ -31,12 +31,9 @@ int main() {
         str[14] = 195;
         str[15] = 0;
 
-        printf("MU");
         if(strcmp(base92encode(str, 15), "c)L#O2K}%8Vo_OM3kB:") != 0)
                 exit(1);
-        printf("MU");
         s = base92decode("c)L#O2K}%8Vo_OM3kB:", &i);
-        printf("MUMU");
         if(strcmp(stringify(s, i), str) != 0)
                 exit(1);
         return 0;

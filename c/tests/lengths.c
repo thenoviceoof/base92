@@ -33,15 +33,11 @@ int main() {
         str[0] = 0;
 
         for(i = 0; i < LEN; i++) {
-                printf("MU %d\n", i);
                 str[i] = 'a';
                 str[i+1] = 0;
-                printf("s1: %s\n", base92encode(str, i+1));
-                printf("s2: %s\n", strs[i]);
                 if(strcmp(base92encode(str, i+1), strs[i]) != 0)
                         exit(1);
                 s = base92decode(strs[i], &j);
-                printf("s: %s\n", stringify(s, j));
                 if(strcmp(stringify(s, j), str) != 0)
                         exit(1);
         }

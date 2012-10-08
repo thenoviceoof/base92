@@ -6,8 +6,6 @@
 
 #include <base92.h>
 
-#include <stdio.h>
-
 unsigned char ENCODE_MAPPING[256] = (unsigned char[]){
         33, 35, 36, 37, 38, 39, 40, 41, 42, 43,
         44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
@@ -104,7 +102,6 @@ unsigned char* base92encode(unsigned char* str, int len) {
                 wssize += 8;
                 if (wssize >= 13) {
                         tmp = (workspace >> (wssize - 13)) & 8191;
-                        // printf("bd: %d\n", tmp);
                         c = base92chr_encode(tmp / 91);
                         if (c == 0) {
                                 // do something, illegal character
@@ -171,17 +168,13 @@ unsigned char* base92decode(unsigned char* str, int* len) {
                 return res;
         }
         // calculate size
-        *len = ((size/2 * 13) + (size % 2) * 6) % 8;
-        if (*len == 0) {
-                *len = ((size/2 * 13) + (size % 2) * 6) / 8;
-        } else {
-                *len = ((size/2 * 13) + (size % 2) * 6) / 8 + 1;
-        }
+        *len = ((size/2 * 13) + (size%2 * 6)) / 8;
         res = (unsigned char *)malloc(sizeof(char) * (*len));
         // handle pairs of chars
         workspace = 0;
         wssize = 0;
-        for (i = 0; i < size; i += 2) {
+        j = 0;
+        for (i = 0; i + 1 < size; i += 2) {
                 b1 = base92chr_decode(str[i]);
                 b2 = base92chr_decode(str[i+1]);
                 workspace = (workspace << 13) | (b1 * 91 + b2);
