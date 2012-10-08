@@ -11,7 +11,9 @@ USAGE
 
     #include <base92/base92.h>
     ...
-    base92encode("hello world") == "Fc_$aOTdKnsM*k"
+    strcmp(base92encode("hello world", 11), "Fc_$aOTdKnsM*k") == 0;
+    base92decode("Fc_$aOTdKnsM*k", &length);
+    length == 11;
     ...
 
 ### Python ###
