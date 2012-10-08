@@ -18,3 +18,5 @@ tests/binary_string
 tests/lengths
 tests/chr_encode
 tests/chr_decode
+tests/onechar_test
+tests/simple_test
