@@ -28,12 +28,14 @@ Fire up your favorite python:
 
 DESIGN DECISIONS
 --------------------------------------------------------------------------------
-We are going to try and be clever, and leave out some characters from
-the general encoding scheme:
+We are going to try and be clever, and leave out some printable ASCII
+characters from the general encoding scheme:
 
     ~, `, "
 
-The ` and " are just too similar to a normal quote ' for comfort.
+The ` and " are just too similar to a normal quote ' for comfort when
+typing out encoded strings. Hopefully you're using a good font when
+differentiating between l/1 and 0/O.
 
 However, we'll use ~ for a special denotation (an empty string).
 There are 94 printable ascii characters, so we end up with 91
