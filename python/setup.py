@@ -7,7 +7,7 @@ setup(
     author_email='thenoviceoof@gmail.com',
     packages=['base92'],
     scripts=[],
-    url='http://pypi.python.org/pypi/base92/',
+    url='https://github.com/thenoviceoof/base92',
     license='LICENSE.txt',
     description='A library to create base92 encoded strings',
     long_description=open('README.txt').read(),
