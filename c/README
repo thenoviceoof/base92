@@ -4,6 +4,13 @@ A little library for encoding byte-strings into strings easily
 typeable on a standard US 101-key keyboard.
 
 
+INSTALL
+--------------------------------------------------------------------------------
+The C library is built with the GNU development tools
+(automake/autoconf), and can be built in the usual way with a `make
+install`.
+
+
 USAGE
 --------------------------------------------------------------------------------
 

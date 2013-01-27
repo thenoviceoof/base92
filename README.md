@@ -4,6 +4,17 @@ A little library for encoding byte-strings into strings easily
 typeable on a standard US 101-key keyboard.
 
 
+INSTALLATION
+--------------------------------------------------------------------------------
+The C library is built with the GNU development tools
+(automake/autoconf), and can be built in the usual way with a `make
+install`.
+
+The python library is available through pypi
+(http://pypi.python.org/pypi/base92/) with `pip install base92`, or
+with `python setup.py install`.
+
+
 USAGE
 --------------------------------------------------------------------------------
 
@@ -17,6 +28,7 @@ USAGE
     ...
 
 ### Python ###
+
 Fire up your favorite python:
 
     >>> import base92
