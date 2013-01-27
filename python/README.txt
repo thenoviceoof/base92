@@ -25,6 +25,9 @@ base92.py library file with your python.
 MISC
 ----
 
+This library is pure python: there may be a cbase92 forthcoming,
+backed by a C library.
+
 This library has not been tested with python3.
 
 There is more information available at

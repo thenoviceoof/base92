@@ -1,3 +1,4 @@
+v1.0.3, 2012/1/26 -- Note this is a pure-python library
 v1.0.2, 2012/1/26 -- Fix bug with `import base92`, imported fns incorrectly
 v1.0.1, 2012/1/26 -- Making sure the intro text renders correctly
 v1.0, 2012/1/26 -- Initial Release
