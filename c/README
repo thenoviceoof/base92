@@ -1,0 +1,39 @@
+base92
+================================================================================
+A little library for encoding byte-strings into strings easily
+typeable on a standard US 101-key keyboard.
+
+
+USAGE
+--------------------------------------------------------------------------------
+
+    #include <base92/base92.h>
+    ...
+    strcmp(base92encode("hello world", 11), "Fc_$aOTdKnsM*k") == 0;
+    base92decode("Fc_$aOTdKnsM*k", &length);
+    length == 11;
+    ...
+
+
+DESIGN DECISIONS
+--------------------------------------------------------------------------------
+For wider design decisions, see the README for the wider base92
+package: https://raw.github.com/thenoviceoof/base92/master/README.md
+
+The library is somewhat optimized for speed, with a static table
+sitting at the heart of the encode/decode routines. However, it has
+not been profiled and optimized in the traditional sense.
+
+The strings output by base92encode are null-delimited, while
+base92decode gives a non-null-delimited string, since such a string
+could be binary in nature and it wouldn't make sense to null-delimit
+such a string.
+
+
+LICENSE
+--------------------------------------------------------------------------------
+THE BEERWARE LICENSE (Revision 42):
+<thenoviceoof> wrote this file. As long as you retain this notice you
+can do whatever you want with this stuff. If we meet some day, and you
+think this stuff is worth it, you can buy me a beer in return
+- Nathan Hwang (thenoviceoof)
