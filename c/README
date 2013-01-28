@@ -37,6 +37,13 @@ could be binary in nature and it wouldn't make sense to null-delimit
 such a string.
 
 
+THANKS
+--------------------------------------------------------------------------------
+ - tly1980: Filed issue #3
+ - l31g: helped with resolving issue #3
+ - seanyeh: helped with resolving issue #3
+
+
 LICENSE
 --------------------------------------------------------------------------------
 THE BEERWARE LICENSE (Revision 42):
