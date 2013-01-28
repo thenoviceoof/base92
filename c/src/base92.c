@@ -160,12 +160,15 @@ unsigned char* base92decode(unsigned char* str, int* len) {
         unsigned long workspace;
         unsigned short wssize;
         size = strlen(str);
-        if (strlen(str) < 2) {
-                res = NULL;
-        }
         // handle small cases first
-        if (strcmp(str, "~") == 0 || strlen(str) == 0) {
+        if (strcmp(str, "~") == 0 || size == 0) {
+                res = (unsigned char*)malloc(sizeof(char) * 1);
+                res[0] = 0;
                 return res;
+        }
+        // this case does not fit the specs
+        if (size < 2) {
+                res = NULL;
         }
         // calculate size
         *len = ((size/2 * 13) + (size%2 * 6)) / 8;
