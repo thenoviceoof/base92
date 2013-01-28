@@ -102,10 +102,19 @@ implementation and I wouldn't want to benchmark anything that's not a
 native C library.
 
 
+THANKS
+--------------------------------------------------------------------------------
+ - tly1980: Filed issue #3
+ - l31g: helped with resolving issue #3
+ - seanyeh: helped with resolving issue #3
+
+
 LICENSE
 --------------------------------------------------------------------------------
 THE BEERWARE LICENSE (Revision 42):
-<thenoviceoof> wrote this file. As long as you retain this notice you
+
+@thenoviceoof wrote this file. As long as you retain this notice you
 can do whatever you want with this stuff. If we meet some day, and you
 think this stuff is worth it, you can buy me a beer in return
+
 - Nathan Hwang (thenoviceoof)
