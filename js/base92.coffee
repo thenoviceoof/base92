@@ -191,6 +191,8 @@ base92.encode = (bytes) ->
         if bytes.length == 0
                 return '~'
         res = ''
+        # we do bit twiddling here, b/c arrays seem like a heavy solution
+        # with 53 bits to fit 13+8 bits (off the cuff max) not a problem
         workspace = 0 # where to keep the bits
         wssize = 0 # how many bits are there
         for b in bytes
@@ -213,6 +215,35 @@ base92.encode = (bytes) ->
         return res
 
 base92.decode = (str) ->
+        if str.length == 0 or str == '~'
+                return [0]
+        if str.length < 2
+                return undefined
+        # handle pairs
+        res = []
+        workspace = 0
+        wssize = 0
+        for i in [0..str.length - 1] by 2
+                b1 = base92.decodeMapping[str[i]]
+                b2 = base92.decodeMapping[str[i+1]]
+                workspace = workspace * 8192 + (91 * b1 + b2)
+                wssize += 13
+                while wssize >= 8
+                        tmp = workspace / Math.pow(2, wssize - 8)
+                        res.push Math.round(tmp) & 255
+                        wssize -= 8
+                        # reduce the upper bits, for fp precision
+                        workspace = workspace & (Math.pow(2, wssize) - 1)
+        # handle single chars
+        if str.length % 2 == 1
+                b = base92.decodeMapping[str[str.length - 1]]
+                workspace = workspace / 64 + b
+                wssize += 6
+                while wssize >= 8
+                        tmp = workspace / Math.pow(2, wssize - 8)
+                        res.push Math.round(tmp) & 255
+                        wssize -= 8
+        return res
 
 # attach the base92 module to the global scope
 @base92 = base92
