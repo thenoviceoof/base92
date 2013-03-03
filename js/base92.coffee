@@ -245,5 +245,5 @@ base92.decode = (str) ->
                         wssize -= 8
         return res
 
-# attach the base92 module to the global scope
-@base92 = base92
+# make me a module
+define base92
