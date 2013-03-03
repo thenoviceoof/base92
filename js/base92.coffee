@@ -1,7 +1,6 @@
-# attach the base92 module to the global scope
-@base92 = new Object
+base92 = new Object
 
-@base92.encodeMapping =
+base92.encodeMapping =
         0: '!'
         1: '#'
         2: '$'
@@ -95,7 +94,7 @@
         90: '}'
 
 
-@base92.decodeMapping =
+base92.decodeMapping =
         '!': 0
         '#': 1
         '$': 2
@@ -188,10 +187,32 @@
         '|': 89
         '}': 90
 
-@base92.int2char = (i) ->
+base92.encode = (bytes) ->
+        if bytes.length == 0
+                return '~'
+        res = ''
+        workspace = 0 # where to keep the bits
+        wssize = 0 # how many bits are there
+        for b in bytes
+                workspace = workspace * 256 + b
+                wssize += 8
+                if wssize >= 13
+                        tmp = (workspace / Math.pow(2,wssize-13)) & 8191
+                        res += base92.encodeMapping[Math.floor(tmp/91)]
+                        res += base92.encodeMapping[Math.floor(tmp%91)]
+                        # we'll want to reduce the size, b/c fp prec
+                        wssize -= 13
+                        workspace = workspace & (Math.pow(2, wssize) - 1)
+        if 0 < wssize and wssize < 7
+                tmp = workspace * Math.pow(2, 6 - wssize) & 63
+                res += base92.encodeMapping[tmp]
+        else if 7 <= wssize
+                tmp = workspace * Math.pow(2, 13 - wssize) & 8191
+                res += base92.encodeMapping[Math.floor(tmp/91)]
+                res += base92.encodeMapping[Math.floor(tmp%91)]
+        return res
 
-@base92.char2int = (c) ->
+base92.decode = (str) ->
 
-@base92.encode = (str) ->
-
-@base92.decode = (str) ->
+# attach the base92 module to the global scope
+@base92 = base92
