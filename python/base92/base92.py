@@ -84,7 +84,7 @@ def base92_ord(val):
         ...
     ValueError: val is not a base92 character
     '''
-    num = ord(val)
+    num = ord(str(val))
     if val.encode() == b'!':
         return 0
     elif ord('#') <= num and num <= ord('_'):
@@ -128,7 +128,7 @@ def encode(bytstr):
     # prime the pump
     bitstr = ''
     while len(bitstr) < 13 and bytstr:
-        bitstr += '{:08b}'.format(ord(bytstr[0]))
+        bitstr += '{:08b}'.format(ord(str(bytstr[0])))
         bytstr = bytstr[1:]
     resstr = b''
     while len(bitstr) > 13 or bytstr:
@@ -137,7 +137,7 @@ def encode(bytstr):
         resstr += base92_chr(i % 91)
         bitstr = bitstr[13:]
         while len(bitstr) < 13 and bytstr:
-            bitstr += '{:08b}'.format(ord(bytstr[0]))
+            bitstr += '{:08b}'.format(ord(str(bytstr[0])))
             bytstr = bytstr[1:]
     if bitstr:
         if len(bitstr) < 7:
@@ -178,14 +178,14 @@ def decode(bstr):
         return b''
     # we always have pairs of characters
     for i in range(len(bstr) // 2):
-        x = base92_ord(bstr[2*i])*91 + base92_ord(bstr[2*i+1])
+        x = base92_ord(bstr[2*i])*91 + base92_ord(str(bstr[2*i+1]))
         bitstr += '{:013b}'.format(x)
         while 8 <= len(bitstr):
             resstr += chr(int(bitstr[0:8], 2)).encode()
             bitstr = bitstr[8:]
     # if we have an extra char, check for extras
     if len(bstr) % 2 == 1:
-        x = base92_ord(bstr[-1])
+        x = base92_ord(str(bstr[-1]))
         bitstr += '{:06b}'.format(x)
         while 8 <= len(bitstr):
             resstr += chr(int(bitstr[0:8], 2)).encode()
