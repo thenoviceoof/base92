@@ -1,5 +1,5 @@
 '''
-Import routines from base92.base92 for manipulating base92 encoded strings.
+Import routines from base92.cbase92 or base92.base92 for manipulating base92 encoded strings.
 
 Example:
 
