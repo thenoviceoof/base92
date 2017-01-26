@@ -18,6 +18,47 @@ Fire up your favorite python::
     >>> base92.encode('\x61\xf2\x05\x99\x42')
     'DJ8gER!'
 
+Test the backends in ipython:
+
+    In [1]: import base92.base92
+
+    In [2]: base92.base92.test()
+    correctness spot check passed
+
+    In [3]: %timeit base92.base92.test()
+    correctness spot check passed
+    # ...
+    correctness spot check passed
+    1 loop, best of 3: 1.36 s per loop
+
+    In [4]: import base92.cbase92
+
+    In [5]: base92.cbase92.test()
+    correctness spot check passed
+
+    In [6]: %timeit base92.cbase92.test()
+    correctness spot check passed
+    # ...
+    correctness spot check passed
+    10 loops, best of 3: 53.3 ms per loop
+
+    In [7]: import base92
+
+    In [8]: base92.encode is base92.cbase92.encode
+    OUT[8]: True
+
+If the C backend is not available, the python backend will be used:
+
+    rm -f base92/base92_extension.so
+
+    In [1]: import base92
+    Falling back to base92 python backend due to: No module named base92_extension
+
+    In [2]: import base92.base92
+
+    In [3]: base92.encode is base92.base92.encode
+    Out[3]: True
+
 We use doctests, so running the tests is as easy as executing the
 base92.py library file with your python.
 
