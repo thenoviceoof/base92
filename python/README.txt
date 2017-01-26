@@ -6,6 +6,15 @@ A little library for encoding byte-strings into strings easily
 typeable on a standard US 101-key keyboard, with strictly better
 information density than base64 or base85 encodings.
 
+--------
+BUILDING
+--------
+
+Compile the C extension and install.
+
+    python setup.py build_ext --inplace  # creates base92/base92_extension.so
+    python setup.py install
+
 -----
 USAGE
 -----
@@ -61,15 +70,6 @@ If the C backend is not available, the python backend will be used:
 
 We use doctests, so running the tests is as easy as executing the
 base92.py library file with your python.
-
---------
-BUILDING
---------
-
-Compile the C extension and install.
-
-    python setup.py build_ext --inplace
-    python setup.py install
 
 ----
 MISC
