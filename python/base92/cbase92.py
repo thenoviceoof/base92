@@ -46,12 +46,9 @@ def test():
     doctest.testmod()
 
     ## more correctness tests
-    import hashlib
     import random
-    def gen_bytes(s):
-        return hashlib.sha512(s).digest()[:random.randint(1,64)]
     for _ in range(10000):
-        s = gen_bytes(bytes(random.random()))
+        s = bytes(bytearray(random.getrandbits(8) for _ in range(random.randint(0, 255))))
         assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
     print('correctness spot check passed')
 
