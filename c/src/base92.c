@@ -166,10 +166,6 @@ unsigned char* base92decode(unsigned char* str, int* len) {
                 res[0] = 0;
                 return res;
         }
-        // this case does not fit the specs
-        if (size < 2) {
-                res = NULL;
-        }
         // calculate size
         *len = ((size/2 * 13) + (size%2 * 6)) / 8;
         res = (unsigned char *)malloc(sizeof(char) * (*len));
