@@ -50,7 +50,7 @@ def test():
     import random
     def gen_bytes(s):
         return hashlib.sha512(s).digest()[:random.randint(1,64)]
-    for _ in xrange(10000):
+    for _ in range(10000):
         s = gen_bytes(str(random.random()))
         assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
     print('correctness spot check passed')
