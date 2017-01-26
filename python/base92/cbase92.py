@@ -7,20 +7,20 @@
 '''
 base92: a library for encoding byte strings
 
->>> x = encode('hello world')
->>> x
+>>> x = encode(b'hello world')
+>>> str(x.decode())
 'Fc_$aOTdKnsM*k'
->>> decode(x)
+>>> str(decode(x).decode())
 'hello world'
 
->>> y = encode('^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
+>>> y = encode(b'^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
 >>> y
 "C=i.w6'IvB/viUpRAwco"
 >>> decode(y)
 '^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
 
 this is a regression test
->>> decode(encode('aoeuaoeuaoeu'))
+>>> str(decode(encode('aoeuaoeuaoeu')).decode())
 'aoeuaoeuaoeu'
 '''
 
@@ -35,7 +35,7 @@ __all__ = [
     'base92decode',
 ]
 
-from base92_extension import encode, decode
+from .base92_extension import encode, decode
 
 base92_encode = b92encode = encode
 base92_decode = b92decode = decode
