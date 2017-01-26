@@ -10,5 +10,8 @@ Example:
 >>> decode(x)
 'hello world'
 '''
-
-from base92 import encode, decode, b92encode, b92decode, __version__
+try:
+    from cbase92 import encode, decode, b92encode, b92decode, __version__
+except (ImportError, OSError) as e:
+    print('Falling back to base92 python backend due to: {}'.format(e))
+    from base92 import encode, decode, b92encode, b92decode, __version__
