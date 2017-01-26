@@ -118,9 +118,9 @@ def encode(bytstr):
     if not bytstr:
         return '~'
     # make sure we have a bytstr
-    if not isinstance(bytstr, basestring):
+    if not isinstance(bytstr, bytes):
         # we'll assume it's a sequence of ints
-        bytstr = ''.join([chr(b) for b in bytstr])
+        bytstr = ''.join(chr(b) for b in bytstr)
     # prime the pump
     bitstr = ''
     while len(bitstr) < 13 and bytstr:
@@ -201,7 +201,7 @@ def test():
     def gen_bytes(s):
         return hashlib.sha512(s).digest()[:random.randint(1,64)]
     for _ in range(10000):
-        s = gen_bytes(str(random.random()))
+        s = gen_bytes(bytes(random.random()))
         assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
     print('correctness spot check passed')
 
