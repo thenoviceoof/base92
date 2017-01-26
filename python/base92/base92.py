@@ -118,31 +118,35 @@ def encode(bytstr):
     if not bytstr:
         return '~'
     # make sure we have a bytstr
-    if not isinstance(bytstr, bytes):
+    if isinstance(bytstr, bytes):
+        pass
+    elif isinstance(bytstr, str):
+        bytstr = bytstr.encode()
+    else:
         # we'll assume it's a sequence of ints
-        bytstr = ''.join(chr(b) for b in bytstr)
+        bytstr = b''.join(chr(b).encode() for b in bytstr)
     # prime the pump
-    bitstr = ''
+    bitstr = b''
     while len(bitstr) < 13 and bytstr:
-        bitstr += '{:08b}'.format(ord(bytstr[0]))
+        bitstr += b'{:08b}'.format(ord(bytstr[0]))
         bytstr = bytstr[1:]
-    resstr = ''
+    resstr = b''
     while len(bitstr) > 13 or bytstr:
         i = int(bitstr[:13], 2)
-        resstr += base92_chr(i / 91)
+        resstr += base92_chr(i // 91)
         resstr += base92_chr(i % 91)
         bitstr = bitstr[13:]
         while len(bitstr) < 13 and bytstr:
-            bitstr += '{:08b}'.format(ord(bytstr[0]))
+            bitstr += b'{:08b}'.format(ord(bytstr[0]))
             bytstr = bytstr[1:]
     if bitstr:
         if len(bitstr) < 7:
-            bitstr += '0' * (6 - len(bitstr))
+            bitstr += b'0' * (6 - len(bitstr))
             resstr += base92_chr(int(bitstr,2))
         else:
-            bitstr += '0' * (13 - len(bitstr))
+            bitstr += b'0' * (13 - len(bitstr))
             i = int(bitstr, 2)
-            resstr += base92_chr(i / 91)
+            resstr += base92_chr(i // 91)
             resstr += base92_chr(i % 91)
     return resstr
 
@@ -166,23 +170,23 @@ def decode(bstr):
     >>> base92_decode("D81RPya.)hgNA(%s")
     'aaaaaaaaaaaaa'
     '''
-    bitstr = ''
-    resstr = ''
-    if bstr == '~':
-        return ''
+    bitstr = b''
+    resstr = b''
+    if bstr == b'~':
+        return b''
     # we always have pairs of characters
-    for i in range(len(bstr)/2):
+    for i in range(len(bstr) // 2):
         x = base92_ord(bstr[2*i])*91 + base92_ord(bstr[2*i+1])
-        bitstr += '{:013b}'.format(x)
+        bitstr += b'{:013b}'.format(x)
         while 8 <= len(bitstr):
-            resstr += chr(int(bitstr[0:8], 2))
+            resstr += chr(int(bitstr[0:8], 2)).encode()
             bitstr = bitstr[8:]
     # if we have an extra char, check for extras
     if len(bstr) % 2 == 1:
         x = base92_ord(bstr[-1])
-        bitstr += '{:06b}'.format(x)
+        bitstr += b'{:06b}'.format(x)
         while 8 <= len(bitstr):
-            resstr += chr(int(bitstr[0:8], 2))
+            resstr += chr(int(bitstr[0:8], 2)).encode()
             bitstr = bitstr[8:]
     return resstr
 
@@ -196,12 +200,9 @@ def test():
     doctest.testmod()
 
     ## more correctness tests
-    import hashlib
     import random
-    def gen_bytes(s):
-        return hashlib.sha512(s).digest()[:random.randint(1,64)]
     for _ in range(10000):
-        s = gen_bytes(bytes(random.random()))
+        s = bytes(bytearray(random.getrandbits(8) for _ in range(random.randint(0, 255))))
         assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
     print('correctness spot check passed')
 
