@@ -3,6 +3,7 @@ from setuptools import setup, Extension
 
 CFLAGS = os.environ.get('CFLAGS', '').split()
 LFLAGS = os.environ.get('LFLAGS', '').split()
+def_macros = []
 
 setup(
     name='base92',
