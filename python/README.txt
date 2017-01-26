@@ -21,12 +21,20 @@ Fire up your favorite python::
 We use doctests, so running the tests is as easy as executing the
 base92.py library file with your python.
 
+--------
+BUILDING
+--------
+
+Compile the C extension and install.
+
+    python setup.py build_ext --inplace
+    python setup.py install
+
 ----
 MISC
 ----
 
-This library is pure python: there may be a cbase92 forthcoming,
-backed by a C library.
+This library has a C extension as a backend and falls back to python if the backend isn't available.
 
 This library has not been tested with python3.
 
