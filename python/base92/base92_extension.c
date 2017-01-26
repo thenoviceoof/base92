@@ -93,8 +93,7 @@ PyBase92_encode(PyObject *self, PyObject *args)
     int tmp;
     unsigned char c;
 
-    /* Accept some kind of input followed by
-     * typesize, clevel, shuffle and cname */
+    /* Accept some kind of input */
 #if PY_MAJOR_VERSION <= 2
     /* s* : bytes like object including unicode and anything that supports
      * the buffer interface */
@@ -221,8 +220,7 @@ PyBase92_decode(PyObject *self, PyObject *args)
     unsigned long workspace;
     unsigned short wssize;
 
-    /* Accept some kind of input followed by
-     * typesize, clevel, shuffle and cname */
+    /* Accept some kind of input */
 #if PY_MAJOR_VERSION <= 2
     /* s* : bytes like object including unicode and anything that supports
      * the buffer interface */
