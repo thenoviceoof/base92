@@ -4,23 +4,24 @@
 # think this stuff is worth it, you can buy me a beer in return
 # - Nathan Hwang (thenoviceoof)
 
+
 '''
 base92: a library for encoding byte strings
 
->>> x = encode('hello world')
->>> x
+>>> x = encode(b'hello world')
+>>> str(x.decode())
 'Fc_$aOTdKnsM*k'
->>> decode(x)
+>>> str(decode(x).decode())
 'hello world'
 
->>> y = encode('^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
+>>> y = encode(b'^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
 >>> y
 "C=i.w6'IvB/viUpRAwco"
 >>> decode(y)
 '^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
 
 this is a regression test
->>> decode(encode('aoeuaoeuaoeu'))
+>>> str(decode(encode('aoeuaoeuaoeu')).decode())
 'aoeuaoeuaoeu'
 '''
 
@@ -36,21 +37,32 @@ __all__ = [
 ]
 
 
+if bytes is str:
+    _chr = chr
+    _ord = ord
+else:
+    import struct
+    _chr = struct.Struct(">B").pack
+    _ord = lambda v: v if isinstance(v, int) else ord(v)
+    del struct
+
+
+
 def base92_chr(val):
     '''
     Map an integer value <91 to a char
 
-    >>> base92_chr(0)
+    >>> str(base92_chr(0).decode())
     '!'
-    >>> base92_chr(1)
+    >>> str(base92_chr(1).decode())
     '#'
-    >>> base92_chr(61)
+    >>> str(base92_chr(61).decode())
     '_'
-    >>> base92_chr(62)
+    >>> str(base92_chr(62).decode())
     'a'
-    >>> base92_chr(90)
+    >>> str(base92_chr(90).decode())
     '}'
-    >>> base92_chr(91)
+    >>> str(base92_chr(91).decode())
     Traceback (most recent call last):
         ...
     ValueError: val must be in [0, 91)
@@ -60,63 +72,63 @@ def base92_chr(val):
     if val == 0:
         return b'!'
     elif val <= 61:
-        return chr(ord('#') + val - 1).encode()
+        return _chr(ord('#') + val - 1)
     else:
-        return chr(ord('a') + val - 62).encode()
+        return _chr(ord('a') + val - 62)
 
     
 def base92_ord(val):
     '''
     Map a char to an integer
 
-    >>> base92_ord('!')
+    >>> base92_ord(b'!')
     0
-    >>> base92_ord('#')
+    >>> base92_ord(b'#')
     1
-    >>> base92_ord('_')
+    >>> base92_ord(b'_')
     61
-    >>> base92_ord('a')
+    >>> base92_ord(b'a')
     62
-    >>> base92_ord('}')
+    >>> base92_ord(b'}')
     90
-    >>> base92_ord(' ')
+    >>> base92_ord(b' ')
     Traceback (most recent call last):
         ...
     ValueError: val is not a base92 character
     '''
-    num = ord(str(val))
-    if val.encode() == b'!':
+    num = _ord(val)
+    if num == _ord(b'!'):
         return 0
-    elif ord('#') <= num and num <= ord('_'):
-        return num - ord('#') + 1
-    elif ord('a') <= num and num <= ord('}'):
-        return num - ord('a') + 62
+    elif _ord(b'#') <= num <= _ord(b'_'):
+        return num - _ord(b'#') + 1
+    elif _ord(b'a') <= num <= _ord(b'}'):
+        return num - _ord(b'a') + 62
     else:
         raise ValueError('val is not a base92 character')
 
-        
+ 
 def encode(bytstr):
     '''
     Take a byte-string, and encode it in base 91
 
-    >>> base92_encode("")
+    >>> str(base92_encode(b"").decode())
     '~'
-    >>> base92_encode("\\x00")
+    >>> str(base92_encode(b"\\x00").decode())
     '!!'
-    >>> base92_encode("\x01")
+    >>> str(base92_encode(b"\x01").decode())
     '!B'
-    >>> base92_encode("\xff")
+    >>> str(base92_encode(b"\xff").decode())
     '|_'
-    >>> base92_encode("aa")
+    >>> str(base92_encode(b"aa").decode())
     'D8*'
-    >>> base92_encode("aaaaaaaaaaaaa")
+    >>> str(base92_encode(b"aaaaaaaaaaaaa").decode())
     'D81RPya.)hgNA(%s'
-    >>> base92_encode([16,32,48])
+    >>> str(base92_encode([16,32,48]).decode())
     "'_$,"
     '''
     # always encode *something*, in case we need to avoid empty strings
     if not bytstr:
-        return '~'
+        return b'~'
     # make sure we have a bytstr
     if isinstance(bytstr, bytes):
         pass
@@ -124,11 +136,11 @@ def encode(bytstr):
         bytstr = bytstr.encode()
     else:
         # we'll assume it's a sequence of ints
-        bytstr = b''.join(chr(b).encode() for b in bytstr)
+        bytstr = b''.join(_chr(b) for b in bytstr)
     # prime the pump
     bitstr = ''
     while len(bitstr) < 13 and bytstr:
-        bitstr += '{:08b}'.format(ord(str(bytstr[0])))
+        bitstr += '{:08b}'.format(_ord(bytstr[0]))
         bytstr = bytstr[1:]
     resstr = b''
     while len(bitstr) > 13 or bytstr:
@@ -137,7 +149,7 @@ def encode(bytstr):
         resstr += base92_chr(i % 91)
         bitstr = bitstr[13:]
         while len(bitstr) < 13 and bytstr:
-            bitstr += '{:08b}'.format(ord(str(bytstr[0])))
+            bitstr += '{:08b}'.format(_ord(bytstr[0]))
             bytstr = bytstr[1:]
     if bitstr:
         if len(bitstr) < 7:
@@ -155,19 +167,19 @@ def decode(bstr):
     '''
     Take a base92 encoded string, convert it back to a byte-string
 
-    >>> base92_decode("")
+    >>> str(base92_decode(b"").decode())
     ''
-    >>> base92_decode("~")
+    >>> str(base92_decode(b"~").decode())
     ''
-    >>> base92_decode("!!")
+    >>> str(base92_decode(b"!!").decode())
     '\\x00'
-    >>> base92_decode("!B")
+    >>> str(base92_decode(b"!B").decode())
     '\\x01'
-    >>> base92_decode("|_")
+    >>> base92_decode(b"|_")
     '\\xff'
-    >>> base92_decode("D8*")
+    >>> str(base92_decode(b"D8*").decode())
     'aa'
-    >>> base92_decode("D81RPya.)hgNA(%s")
+    >>> str(base92_decode(b"D81RPya.)hgNA(%s").decode())
     'aaaaaaaaaaaaa'
     '''
     bitstr = ''
@@ -178,17 +190,17 @@ def decode(bstr):
         return b''
     # we always have pairs of characters
     for i in range(len(bstr) // 2):
-        x = base92_ord(bstr[2*i])*91 + base92_ord(str(bstr[2*i+1]))
+        x = base92_ord(bstr[2*i])*91 + base92_ord(bstr[2*i+1])
         bitstr += '{:013b}'.format(x)
         while 8 <= len(bitstr):
-            resstr += chr(int(bitstr[0:8], 2)).encode()
+            resstr += _chr(int(bitstr[0:8], 2))
             bitstr = bitstr[8:]
     # if we have an extra char, check for extras
     if len(bstr) % 2 == 1:
-        x = base92_ord(str(bstr[-1]))
+        x = base92_ord(bstr[-1])
         bitstr += '{:06b}'.format(x)
         while 8 <= len(bitstr):
-            resstr += chr(int(bitstr[0:8], 2)).encode()
+            resstr += _chr(int(bitstr[0:8], 2))
             bitstr = bitstr[8:]
     return resstr
 
