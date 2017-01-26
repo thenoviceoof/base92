@@ -24,9 +24,17 @@ this is a regression test
 'aoeuaoeuaoeu'
 '''
 
-import math
-
 __version__ = (1, 0, 3)
+
+__all__ = [
+    'encode',
+    'decode',
+    'b92encode',
+    'b92decode',
+    'base92encode',
+    'base92decode',
+]
+
 
 def base92_chr(val):
     '''
@@ -56,6 +64,7 @@ def base92_chr(val):
     else:
         return chr(ord('a') + val - 62)
 
+    
 def base92_ord(val):
     '''
     Map a char to an integer
@@ -85,7 +94,8 @@ def base92_ord(val):
     else:
         raise ValueError('val is not a base92 character')
 
-def base92_encode(bytstr):
+        
+def encode(bytstr):
     '''
     Take a byte-string, and encode it in base 91
 
@@ -136,7 +146,8 @@ def base92_encode(bytstr):
             resstr += base92_chr(i % 91)
     return resstr
 
-def base92_decode(bstr):
+
+def decode(bstr):
     '''
     Take a base92 encoded string, convert it back to a byte-string
 
@@ -175,13 +186,12 @@ def base92_decode(bstr):
             bitstr = bitstr[8:]
     return resstr
 
-encode = base92_encode
-b92encode = base92_encode
 
-decode = base92_decode
-b92decode = base92_decode
+base92_encode = b92encode = encode
+base92_decode = b92decode = decode
 
-if __name__ == "__main__":
+
+def test():
     import doctest
     doctest.testmod()
 
@@ -190,9 +200,9 @@ if __name__ == "__main__":
     import random
     def gen_bytes(s):
         return hashlib.sha512(s).digest()[:random.randint(1,64)]
-    for i in range(10000):
+    for _ in xrange(10000):
         s = gen_bytes(str(random.random()))
-        assert s == decode(encode(s))
+        assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
     print('correctness spot check passed')
 
     ## size tests
@@ -206,3 +216,7 @@ if __name__ == "__main__":
     # pprint(sd)
     # print sum(a-c for a,b,c in sd)/float(len(sd))
     # print sum(b-c for a,b,c in sd)/float(len(sd))
+
+    
+if __name__ == "__main__":
+    test()
