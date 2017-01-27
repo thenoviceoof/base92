@@ -18,7 +18,7 @@ def cross_validate(modules, to_encode, expected_encoded=None):
     assert len(set(decoded.values())) == 1, 'different decodings of {!r}: {}\nencodings: {}'.format(to_encode, decoded, encoded)
 
 
-def test(modules=(base92, cbase92), random_count=10000, silent=False):
+def run(modules=(base92, cbase92), random_count=10000, silent=False):
     modules = list({m for m in modules if m})
 
     if not silent:
@@ -67,4 +67,4 @@ def test(modules=(base92, cbase92), random_count=10000, silent=False):
 
 
 if __name__ == '__main__':
-    test()
+    run()
