@@ -24,14 +24,13 @@ def test(modules=(base92, cbase92), random_count=10000, silent=False):
     if not silent:
         print('testing and cross validating encoders and decoders from modules {}'.format(modules))
 
-
     for s, e in [(b'', b'~'), (b'b', b'DL'), (b'hello world', b'Fc_$aOTdKnsM*k'), (b'\x93', b'Ub')]:
         cross_validate(modules, s, e)
     
     if not silent:
         print('selected regression tests passed\ngenerating {} random byte strings'.format(random_count))
 
-    ## more correctness tests
+    # more correctness tests
 
     random_bytes = [gen_bytes() for _ in range(random_count)]
     for s in random_bytes:
@@ -54,7 +53,7 @@ def test(modules=(base92, cbase92), random_count=10000, silent=False):
         print('- encoding: {}s'.format(enc))
         print('- decoding: {}s'.format(dec))
 
-    ## size tests
+    # size tests
     # import base64
     # import base85
     # from pprint import pprint
