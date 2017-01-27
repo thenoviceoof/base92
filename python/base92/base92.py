@@ -5,13 +5,13 @@
 # - Nathan Hwang (thenoviceoof)
 
 
-'''
+"""
 base92: a library for encoding byte strings
 
 >>> x = encode(b'hello world')
->>> str(x.decode())
+>>> x
 'Fc_$aOTdKnsM*k'
->>> str(decode(x).decode())
+>>> decode(x)
 'hello world'
 
 >>> y = encode(b'^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3')
@@ -21,9 +21,9 @@ base92: a library for encoding byte strings
 '^\\xb6;\\xbb\\xe0\\x1e\\xee\\xd0\\x93\\xcb"\\xbb\\x8fZ\\xcd\\xc3'
 
 this is a regression test
->>> str(decode(encode('aoeuaoeuaoeu')).decode())
+>>> decode(encode('aoeuaoeuaoeu'))
 'aoeuaoeuaoeu'
-'''
+"""
 
 __version__ = (1, 0, 3)
 
@@ -47,38 +47,37 @@ else:
     del struct
 
 
-
 def base92_chr(val):
-    '''
+    """
     Map an integer value <91 to a char
 
-    >>> str(base92_chr(0).decode())
+    >>> base92_chr(0)
     '!'
-    >>> str(base92_chr(1).decode())
+    >>> base92_chr(1)
     '#'
-    >>> str(base92_chr(61).decode())
+    >>> base92_chr(61)
     '_'
-    >>> str(base92_chr(62).decode())
+    >>> base92_chr(62)
     'a'
-    >>> str(base92_chr(90).decode())
+    >>> base92_chr(90)
     '}'
-    >>> str(base92_chr(91).decode())
+    >>> base92_chr(91)
     Traceback (most recent call last):
         ...
     ValueError: val must be in [0, 91)
-    '''
+    """
     if val < 0 or val >= 91:
         raise ValueError('val must be in [0, 91)')
     if val == 0:
-        return b'!'
+        return 33  # b'!'  # 33 == ord('!')
     elif val <= 61:
-        return _chr(ord('#') + val - 1)
+        return 35 + val - 1  # 35 == ord('#')
     else:
-        return _chr(ord('a') + val - 62)
+        return 97 + val - 62  # 97 == ord('a')
 
     
-def base92_ord(val):
-    '''
+def base92_ord(val, _excl=_ord(b'!'), _sharp=_ord(b'#'), _under=_ord(b'_'), _a=_ord(b'a'), _rcurl=_ord(b'}')):
+    """
     Map a char to an integer
 
     >>> base92_ord(b'!')
@@ -95,37 +94,37 @@ def base92_ord(val):
     Traceback (most recent call last):
         ...
     ValueError: val is not a base92 character
-    '''
+    """
     num = _ord(val)
-    if num == _ord(b'!'):
+    if num == _excl:
         return 0
-    elif _ord(b'#') <= num <= _ord(b'_'):
-        return num - _ord(b'#') + 1
-    elif _ord(b'a') <= num <= _ord(b'}'):
-        return num - _ord(b'a') + 62
+    elif _sharp <= num <= _under:
+        return num - _sharp + 1
+    elif _a <= num <= _rcurl:
+        return num - _a + 62
     else:
         raise ValueError('val is not a base92 character')
 
  
 def encode(bytstr):
-    '''
+    """
     Take a byte-string, and encode it in base 91
 
-    >>> str(base92_encode(b"").decode())
+    >>> base92_encode(b"")
     '~'
-    >>> str(base92_encode(b"\\x00").decode())
+    >>> base92_encode(b"\\x00")
     '!!'
-    >>> str(base92_encode(b"\x01").decode())
+    >>> base92_encode(b"\x01")
     '!B'
-    >>> str(base92_encode(b"\xff").decode())
+    >>> base92_encode(b"\xff")
     '|_'
-    >>> str(base92_encode(b"aa").decode())
+    >>> base92_encode(b"aa")
     'D8*'
-    >>> str(base92_encode(b"aaaaaaaaaaaaa").decode())
+    >>> base92_encode(b"aaaaaaaaaaaaa")
     'D81RPya.)hgNA(%s'
-    >>> str(base92_encode([16,32,48]).decode())
+    >>> base92_encode([16,32,48])
     "'_$,"
-    '''
+    """
     # always encode *something*, in case we need to avoid empty strings
     if not bytstr:
         return b'~'
@@ -138,100 +137,86 @@ def encode(bytstr):
         # we'll assume it's a sequence of ints
         bytstr = b''.join(_chr(b) for b in bytstr)
     # prime the pump
-    bitstr = ''
-    while len(bitstr) < 13 and bytstr:
-        bitstr += '{:08b}'.format(_ord(bytstr[0]))
-        bytstr = bytstr[1:]
-    resstr = b''
-    while len(bitstr) > 13 or bytstr:
-        i = int(bitstr[:13], 2)
-        resstr += base92_chr(i // 91)
-        resstr += base92_chr(i % 91)
-        bitstr = bitstr[13:]
-        while len(bitstr) < 13 and bytstr:
-            bitstr += '{:08b}'.format(_ord(bytstr[0]))
-            bytstr = bytstr[1:]
-    if bitstr:
-        if len(bitstr) < 7:
-            bitstr += '0' * (6 - len(bitstr))
-            resstr += base92_chr(int(bitstr,2))
-        else:
-            bitstr += '0' * (13 - len(bitstr))
-            i = int(bitstr, 2)
-            resstr += base92_chr(i // 91)
-            resstr += base92_chr(i % 91)
-    return resstr
+    nbytes = len(bytstr)
+    size = (nbytes * 8) % 13
+    size = 2 * (nbytes * 8) // 13 + (0 if size == 0 else (1 if size < 7 else 2))
+    resstr = bytearray(size)
+    workspace = 0
+    wssize = 0
+    j = 0
+    for byte in bytstr:
+        workspace = workspace << 8 | _ord(byte)
+        wssize += 8
+        if wssize < 13:
+            continue
+        tmp = (workspace >> (wssize - 13)) & 8191
+        resstr[j] = base92_chr(tmp // 91)
+        j += 1
+        resstr[j] = base92_chr(tmp % 91)
+        j += 1
+        wssize -= 13
+    if wssize <= 0:
+        pass
+    elif wssize < 7:
+        tmp = (workspace << (6 - wssize)) & 63
+        resstr[j] = base92_chr(tmp)
+        j += 1
+    else:
+        tmp = (workspace << (13 - wssize)) & 8191
+        resstr[j] = base92_chr(tmp // 91)
+        j += 1
+        resstr[j] = base92_chr(tmp % 91)
+        j += 1
+    return bytes(resstr[:j])
 
 
 def decode(bstr):
-    '''
+    """
     Take a base92 encoded string, convert it back to a byte-string
 
-    >>> str(base92_decode(b"").decode())
+    >>> base92_decode(b"")
     ''
-    >>> str(base92_decode(b"~").decode())
+    >>> base92_decode(b"~")
     ''
-    >>> str(base92_decode(b"!!").decode())
+    >>> base92_decode(b"!!")
     '\\x00'
-    >>> str(base92_decode(b"!B").decode())
+    >>> base92_decode(b"!B")
     '\\x01'
     >>> base92_decode(b"|_")
     '\\xff'
-    >>> str(base92_decode(b"D8*").decode())
+    >>> base92_decode(b"D8*")
     'aa'
-    >>> str(base92_decode(b"D81RPya.)hgNA(%s").decode())
+    >>> base92_decode(b"D81RPya.)hgNA(%s")
     'aaaaaaaaaaaaa'
-    '''
-    bitstr = ''
-    resstr = b''
+    """
     if isinstance(bstr, str):
         bstr = bstr.encode()
     if bstr == b'~':
         return b''
+    nbytes = len(bstr)
+    size = ((nbytes // 2 * 13) + (nbytes % 2 * 6)) // 8
+    resstr = bytearray(size)
+    workspace = 0
+    wssize = 0
+    j = 0
     # we always have pairs of characters
-    for i in range(len(bstr) // 2):
-        x = base92_ord(bstr[2*i])*91 + base92_ord(bstr[2*i+1])
-        bitstr += '{:013b}'.format(x)
-        while 8 <= len(bitstr):
-            resstr += _chr(int(bitstr[0:8], 2))
-            bitstr = bitstr[8:]
+    for i in range(nbytes // 2):
+        workspace = (workspace << 13) | (base92_ord(bstr[2*i]) * 91 + base92_ord(bstr[2*i+1]))
+        wssize += 13
+        while wssize >= 8:
+            resstr[j] = (workspace >> (wssize - 8)) & 255
+            wssize -= 8
+            j += 1
     # if we have an extra char, check for extras
-    if len(bstr) % 2 == 1:
-        x = base92_ord(bstr[-1])
-        bitstr += '{:06b}'.format(x)
-        while 8 <= len(bitstr):
-            resstr += _chr(int(bitstr[0:8], 2))
-            bitstr = bitstr[8:]
-    return resstr
+    if nbytes % 2 == 1:
+        workspace = (workspace << 6) | base92_ord(bstr[-1])
+        wssize += 6
+        while wssize >= 8:
+            resstr[j] = (workspace >> (wssize - 8)) & 255
+            wssize -= 8
+            j += 1
+    return bytes(resstr[:j])
 
 
 base92_encode = b92encode = encode
 base92_decode = b92decode = decode
-
-
-def test():
-    import doctest
-    doctest.testmod()
-
-    ## more correctness tests
-    import random
-    for _ in range(10000):
-        s = bytes(bytearray(random.getrandbits(8) for _ in range(random.randint(0, 255))))
-        assert s == decode(encode(s)), 'decode(encode({!r})) = decode({!r}) = {!r}'.format(s, encode(s), decode(encode(s)))
-    print('correctness spot check passed')
-
-    ## size tests
-    # import base64
-    # import base85
-    # from pprint import pprint
-    # sd = [(len(base64.b64encode('a'*i)),
-    #        len(base85.b85encode('a'*i)),
-    #        len(encode('a'*i)))
-    #       for i in range(1,128)]
-    # pprint(sd)
-    # print sum(a-c for a,b,c in sd)/float(len(sd))
-    # print sum(b-c for a,b,c in sd)/float(len(sd))
-
-    
-if __name__ == "__main__":
-    test()
