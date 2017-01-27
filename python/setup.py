@@ -1,4 +1,9 @@
-from distutils.core import setup
+import os
+from setuptools import setup, Extension
+
+CFLAGS = os.environ.get('CFLAGS', '').split()
+LFLAGS = os.environ.get('LFLAGS', '').split()
+def_macros = []
 
 setup(
     name='base92',
@@ -12,4 +17,16 @@ setup(
     description='A library to create base92 encoded strings',
     long_description=open('README.txt').read(),
     install_requires=[],
+    ext_modules = [
+        Extension(
+            'base92.base92_extension',
+            include_dirs=['base92'],
+            define_macros=def_macros,
+            sources=['base92/base92_extension.c'],
+            library_dirs=[],
+            libraries=[],
+            extra_link_args=LFLAGS,
+            extra_compile_args=CFLAGS,
+        ),
+     ],
 )
