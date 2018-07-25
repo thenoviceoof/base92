@@ -289,6 +289,7 @@ static PyMethodDef base92_methods[] =
 {
     {"encode", (PyCFunction)PyBase92_encode, METH_VARARGS, encode__doc__},
     {"decode", (PyCFunction)PyBase92_decode, METH_VARARGS, decode__doc__},
+    {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
 
@@ -315,17 +316,11 @@ static struct PyModuleDef base92_def = {
     "base92_extension",
     NULL,
     -1,
-    base92_methods,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    base92_methods
 };
 
 PyMODINIT_FUNC
 PyInit_base92_extension(void) {
-    PyObject *m = PyModule_Create(&base92_def);
-
-    return m;
+    return PyModule_Create(&base92_def);
 }
 #endif
