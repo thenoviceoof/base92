@@ -79,9 +79,9 @@ unsigned char* base92encode(unsigned char* str, int len) {
         int tmp;
         unsigned char c;
         unsigned char *res;
-        
+
         if (len == 0) {
-                return "~";
+                return (unsigned char*)"~";
         }
         // precalculate how much space we need to malloc
         size = (len * 8) % 13;
@@ -159,9 +159,9 @@ unsigned char* base92decode(unsigned char* str, int* len) {
         unsigned char* res;
         unsigned long workspace;
         unsigned short wssize;
-        size = strlen(str);
+        size = strlen((char*)str);
         // handle small cases first
-        if (strcmp(str, "~") == 0 || size == 0) {
+        if (strcmp((char*)str, "~") == 0 || size == 0) {
                 res = (unsigned char*)malloc(sizeof(char) * 1);
                 res[0] = 0;
                 return res;
