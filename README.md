@@ -20,7 +20,15 @@ USAGE
 
 ### C ###
 
-    #include <base92/base92.h>
+To build as a shared library in $PREFIX.
+
+    mkdir -p $PREFIX/include/ $PREFIX/lib/
+    gcc -shared -Wl,-soname,libbase92 -o $PREFIX/lib/libbase92.so -fPIC -Ic/src c/src/base92.c
+    cp -a c/src/base92.h $PREFIX/include/
+
+Use:
+
+    #include <base92.h>
     ...
     strcmp(base92encode("hello world", 11), "Fc_$aOTdKnsM*k") == 0;
     base92decode("Fc_$aOTdKnsM*k", &length);
@@ -28,6 +36,12 @@ USAGE
     ...
 
 ### Python ###
+
+To build:
+
+    cd python
+    python setup.py build_ext --inplace
+    python setup.py install
 
 Fire up your favorite python:
 
