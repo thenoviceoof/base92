@@ -1,0 +1,4 @@
+base92.egg-info
+.venv
+dist/
+*.pyc
