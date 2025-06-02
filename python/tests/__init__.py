@@ -4,7 +4,7 @@ import sys
 import unittest
 
 import base92
-from base92 import _base92python, _base92compiled
+from base92 import _base92python
 
 MODULES = [
     ("base92._base92python", _base92python),
@@ -12,6 +12,7 @@ MODULES = [
 # If we're running tests under pypy or some other Python, don't try to
 # test the nonexistent compiled version.
 if platform.python_implementation() == "CPython":
+    from base92 import _base92compiled
     MODULES.append(("base92._base92compiled", _base92compiled))
 
 
@@ -21,11 +22,11 @@ class TestBase92Chr(unittest.TestCase):
 
     def test_base92_chr_valid_values(self):
         """Test base92_chr with valid input values"""
-        self.assertEqual(_base92python.base92_chr(0), "!")
-        self.assertEqual(_base92python.base92_chr(1), "#")
-        self.assertEqual(_base92python.base92_chr(61), "_")
-        self.assertEqual(_base92python.base92_chr(62), "a")
-        self.assertEqual(_base92python.base92_chr(90), "}")
+        self.assertEqual(_base92python.base92_chr(0), ord("!"))
+        self.assertEqual(_base92python.base92_chr(1), ord("#"))
+        self.assertEqual(_base92python.base92_chr(61), ord("_"))
+        self.assertEqual(_base92python.base92_chr(62), ord("a"))
+        self.assertEqual(_base92python.base92_chr(90), ord("}"))
 
     def test_base92_chr_invalid_values(self):
         """Test base92_chr with invalid input values"""
@@ -43,16 +44,16 @@ class TestBase92Ord(unittest.TestCase):
 
     def test_base92_ord_valid_chars(self):
         """Test base92_ord with valid characters"""
-        self.assertEqual(_base92python.base92_ord("!"), 0)
-        self.assertEqual(_base92python.base92_ord("#"), 1)
-        self.assertEqual(_base92python.base92_ord("_"), 61)
-        self.assertEqual(_base92python.base92_ord("a"), 62)
-        self.assertEqual(_base92python.base92_ord("}"), 90)
+        self.assertEqual(_base92python.base92_ord(ord("!")), 0)
+        self.assertEqual(_base92python.base92_ord(ord("#")), 1)
+        self.assertEqual(_base92python.base92_ord(ord("_")), 61)
+        self.assertEqual(_base92python.base92_ord(ord("a")), 62)
+        self.assertEqual(_base92python.base92_ord(ord("}")), 90)
 
     def test_base92_ord_invalid_chars(self):
         """Test base92_ord with invalid characters"""
         with self.assertRaises(ValueError) as cm:
-            _base92python.base92_ord(" ")
+            _base92python.base92_ord(ord(" "))
         self.assertEqual(str(cm.exception), "Invalid base92 character")
 
 
@@ -63,23 +64,23 @@ class TestBase92Encode(unittest.TestCase):
         """Test encoding empty string"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_encode(b""), "~")
+                self.assertEqual(module.base92_encode(b""), b"~")
 
     def test_base92_encode_single_bytes(self):
         """Test encoding single byte values"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_encode(b"\x00"), "!!")
-                self.assertEqual(module.base92_encode(b"\x01"), "!B")
-                self.assertEqual(module.base92_encode(b"\xff"), "|_")
+                self.assertEqual(module.base92_encode(b"\x00"), b"!!")
+                self.assertEqual(module.base92_encode(b"\x01"), b"!B")
+                self.assertEqual(module.base92_encode(b"\xff"), b"|_")
 
     def test_base92_base92_encode_multi_bytes(self):
         """Test encoding multiple byte values"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_encode(b"aa"), "D8*")
+                self.assertEqual(module.base92_encode(b"aa"), b"D8*")
                 self.assertEqual(
-                    module.base92_encode(b"aaaaaaaaaaaaa"), "D81RPya.)hgNA(%s"
+                    module.base92_encode(b"aaaaaaaaaaaaa"), b"D81RPya.)hgNA(%s"
                 )
 
 
@@ -87,19 +88,19 @@ class TestBase92Decode(unittest.TestCase):
     """Test cases for base92_decode function"""
 
     def test_base92_decode_invalid_chars(self):
-        """Test base92_ord with invalid characters"""
+        """Test base92_decode with invalid characters"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
                 with self.assertRaises(ValueError) as cm:
-                    module.base92_decode("aa ")
+                    module.base92_decode(b"aa ")
                 self.assertEqual(str(cm.exception), "Invalid base92 character")
 
     def test_base92_decode_length(self):
-        """Test base92_ord with invalid characters"""
+        """Test base92_decode with invalid characters"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
                 with self.assertRaises(ValueError) as cm:
-                    module.base92_decode("a")
+                    module.base92_decode(b"a")
                 self.assertEqual(
                     str(cm.exception), "1 character is not a valid base92 encoding"
                 )
@@ -108,24 +109,24 @@ class TestBase92Decode(unittest.TestCase):
         """Test decoding empty string"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_decode(""), b"")
-                self.assertEqual(module.base92_decode("~"), b"")
+                self.assertEqual(module.base92_decode(b""), b"")
+                self.assertEqual(module.base92_decode(b"~"), b"")
 
     def test_base92_decode_single_bytes(self):
         """Test decoding to single byte values"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_decode("!!"), b"\x00")
-                self.assertEqual(module.base92_decode("!B"), b"\x01")
-                self.assertEqual(module.base92_decode("|_"), b"\xff")
+                self.assertEqual(module.base92_decode(b"!!"), b"\x00")
+                self.assertEqual(module.base92_decode(b"!B"), b"\x01")
+                self.assertEqual(module.base92_decode(b"|_"), b"\xff")
 
     def test_base92_decode_multi_bytes(self):
         """Test decoding to multiple byte values"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
-                self.assertEqual(module.base92_decode("D8*"), b"aa")
+                self.assertEqual(module.base92_decode(b"D8*"), b"aa")
                 self.assertEqual(
-                    module.base92_decode("D81RPya.)hgNA(%s"), b"aaaaaaaaaaaaa"
+                    module.base92_decode(b"D81RPya.)hgNA(%s"), b"aaaaaaaaaaaaa"
                 )
 
 
@@ -138,7 +139,7 @@ class TestBase92Integration(unittest.TestCase):
             with self.subTest(module=module_name):
                 # Test 'hello world' example
                 encoded = module.base92_encode(b"hello world")
-                self.assertEqual(encoded, "Fc_$aOTdKnsM*k")
+                self.assertEqual(encoded, b"Fc_$aOTdKnsM*k")
                 self.assertEqual(module.base92_decode(encoded), b"hello world")
 
     def test_encode_decode_binary(self):
@@ -148,7 +149,7 @@ class TestBase92Integration(unittest.TestCase):
                 # Test binary data example
                 binary_data = b'^\xb6;\xbb\xe0\x1e\xee\xd0\x93\xcb"\xbb\x8fZ\xcd\xc3'
                 encoded_binary = module.base92_encode(binary_data)
-                self.assertEqual(encoded_binary, "C=i.w6'IvB/viUpRAwco")
+                self.assertEqual(encoded_binary, b"C=i.w6'IvB/viUpRAwco")
                 # Note: decode returns the escaped string representation
                 self.assertEqual(
                     module.base92_decode(encoded_binary),

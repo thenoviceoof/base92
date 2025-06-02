@@ -27,14 +27,12 @@ base92: a library for encoding byte strings
 import math
 
 _BASE92_CHARS = (
-    ["!"]
-    + [chr(ord("#") + i) for i in range(61)]
-    + [chr(ord("a") + i) for i in range(29)]
+    [ord("!")] + [ord("#") + i for i in range(61)] + [ord("a") + i for i in range(29)]
 )
 _BASE92_VALUES = {char: idx for idx, char in enumerate(_BASE92_CHARS)}
 
 
-def base92_chr(val: int) -> str:
+def base92_chr(val: int) -> int:
     """
     Map an integer value in the range [0, 91) to a character.
     """
@@ -43,7 +41,7 @@ def base92_chr(val: int) -> str:
     return _BASE92_CHARS[val]
 
 
-def base92_ord(val: str) -> int:
+def base92_ord(val: int) -> int:
     """
     Map a base92 character to an integer.
     """
@@ -53,17 +51,17 @@ def base92_ord(val: str) -> int:
         raise ValueError("Invalid base92 character")
 
 
-def base92_encode(bytstr: bytes) -> str:
+def base92_encode(bytstr: bytes) -> bytes:
     """
     Take a byte string, and encode it in base 92.
     """
     if not bytstr:
-        return "~"
+        return b"~"
 
     # Convert bytes to a single integer for bitwise processing
     bit_buffer = 0
     bit_count = 0
-    result = []
+    result = bytearray()
 
     for byte in bytstr:
         bit_buffer = (bit_buffer << 8) | byte
@@ -92,14 +90,14 @@ def base92_encode(bytstr: bytes) -> str:
             result.append(_BASE92_CHARS[chunk // 91])
             result.append(_BASE92_CHARS[chunk % 91])
 
-    return "".join(result)
+    return bytes(result)
 
 
-def base92_decode(bstr: str) -> bytes:
+def base92_decode(bstr: bytes) -> bytes:
     """
     Take a base92 encoded string, convert it back to a byte string.
     """
-    if bstr == "~":
+    if bstr == b"~":
         return b""
 
     if len(bstr) == 1:

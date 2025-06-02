@@ -55,7 +55,7 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
     }
     
     if (len == 0) {
-        return PyUnicode_FromString("~");
+        return PyBytes_FromString("~");
     }
     
     // Estimate output size (worst case: each byte becomes ~1.4 characters)
@@ -111,7 +111,7 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
     }
     
     result[output_pos] = '\0';
-    PyObject *py_result = PyUnicode_FromStringAndSize(result, output_pos);
+    PyObject *py_result = PyBytes_FromStringAndSize(result, output_pos);
     PyMem_Free(result);
     
     return py_result;
@@ -122,7 +122,7 @@ static PyObject *base92_decode(PyObject *self, PyObject *args) {
     const char *bstr;
     Py_ssize_t len;
     
-    if (!PyArg_ParseTuple(args, "s#", &bstr, &len)) {
+    if (!PyArg_ParseTuple(args, "y#", &bstr, &len)) {
         return NULL;
     }
     
