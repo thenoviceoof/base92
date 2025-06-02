@@ -121,15 +121,3 @@ b92encode = base92_encode
 
 decode = base92_decode
 b92decode = base92_decode
-
-## size tests
-# import base64
-# import base85
-# from pprint import pprint
-# sd = [(len(base64.b64encode('a'*i)),
-#        len(base85.b85encode('a'*i)),
-#        len(encode('a'*i)))
-#       for i in range(1,128)]
-# pprint(sd)
-# print sum(a-c for a,b,c in sd)/float(len(sd))
-# print sum(b-c for a,b,c in sd)/float(len(sd))

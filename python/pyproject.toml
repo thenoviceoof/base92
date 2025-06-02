@@ -29,3 +29,6 @@ dev = [
     "black; python_version>='3.7'",
     "mypy>=0.720",
 ]
+
+[tool.setuptools]
+packages = ["base92"]
