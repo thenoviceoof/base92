@@ -56,7 +56,7 @@ class TestBase92Decode(unittest.TestCase):
                 self.assertEqual(str(cm.exception), "Invalid base92 character")
 
     def test_base92_decode_length(self):
-        """Test base92_decode with invalid characters"""
+        """Test base92_decode with invalid length strings"""
         for module_name, module in MODULES:
             with self.subTest(module=module_name):
                 with self.assertRaises(ValueError) as cm:
@@ -64,6 +64,14 @@ class TestBase92Decode(unittest.TestCase):
                 self.assertEqual(
                     str(cm.exception), "1 character is not a valid base92 encoding"
                 )
+
+    def test_base92_decode_invalid_string(self):
+        """Test base92_decode with an invalid string"""
+        for module_name, module in MODULES:
+            with self.subTest(module=module_name):
+                with self.assertRaises(ValueError) as cm:
+                    module.base92_decode(b"}$")
+                self.assertEqual(str(cm.exception), "Invalid base92 string")
 
     def test_base92_decode_empty_string(self):
         """Test decoding empty string"""

@@ -115,6 +115,8 @@ def base92_decode(bstr: bytes) -> bytes:
         val2 = base92_ord(bstr[i + 1])
 
         chunk = val1 * 91 + val2
+        if chunk >= 8192:
+            raise ValueError("Invalid base92 string")
         bit_buffer = (bit_buffer << 13) | chunk
         bit_count += 13
 

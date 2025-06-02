@@ -47,6 +47,11 @@ base85's 4 to 5 from a size perspective, but is fairly inelegant.
 We also follow base85's convention of using the high divisor product
 as the first bytes.
 
+Technically speaking, 2^6.5 bits is 90.51. We need to round upwards to
+make sure we cover all values, but this does mean that there are
+strings made up of base 92 characters, which are nevertheless invalid
+base92 strings.
+
 ## Size savings
 
 On average, characters saved for string lengths 1-32:

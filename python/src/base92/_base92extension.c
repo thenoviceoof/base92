@@ -144,6 +144,11 @@ static PyObject *base92_decode(PyObject *self, PyObject *args) {
     }
 
     unsigned long long chunk = val1 * 91 + val2;
+    if (chunk >= 8192) {
+      PyMem_Free(result);
+      PyErr_SetString(PyExc_ValueError, "Invalid base92 string");
+      return NULL;
+    }
     bit_buffer = (bit_buffer << 13) | chunk;
     bit_count += 13;
 
