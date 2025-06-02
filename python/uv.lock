@@ -12,12 +12,27 @@ resolution-markers = [
 ]
 
 [[package]]
+name = "atheris"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/80/65938e910e1b61ecf2a66339f2e1860b84d1d0f0e604a0b08910d00707a5/atheris-2.3.0.tar.gz", hash = "sha256:cf1fdf5fa220a41a2f262b32363fc566549502b2cb0addf4e1baad5531c0e825", size = 304139, upload-time = "2023-08-29T20:53:14.063Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/50/db/d141a3ac3974d267946b49abaeedea999725eca44a34534b8c5450356e8f/atheris-2.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b91cb296d60915c3efa4f6db48f09c4678b574cddb7ca98035f1cb9d9fb96f64", size = 30877874, upload-time = "2023-08-29T20:52:55.649Z" },
+    { url = "https://files.pythonhosted.org/packages/00/01/3a2a31c0016233599b12e8fa6c956ec6c1df78630d8cec9cfa78904d0013/atheris-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e4e43d1ee4760916a84ff73c9c6cf9ac6eee80fc030479bbed43fe0b8e994981", size = 31182450, upload-time = "2023-08-29T20:52:58.899Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/2d/8c68827007df7bd21dabadcae5e814dcbc82dee853e816e1c5b98c2194cd/atheris-2.3.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6d4e83c8a518e7f7d1c82ee52453255bf6309b7b335657534e83747d4fdfa110", size = 31288035, upload-time = "2023-08-29T20:53:02.386Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/29/73ff59714cadaca8b79be1e12d4e3c12f9f8c1b221d737084a0fb6a297b9/atheris-2.3.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c353952ee375bf851527e8b2ea57fdefd7ad16aadfe18143801998075485eccd", size = 31293007, upload-time = "2023-08-29T20:53:05.443Z" },
+    { url = "https://files.pythonhosted.org/packages/38/35/00c7d7da1ee1789d0fbed6e4109c3b7d08eac1ac85c7ad73c9920d99a00a/atheris-2.3.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9877b6c2bd5386f9fbbb2989a939c717383d9639f5476411c06fe50fe2fe09a6", size = 30875022, upload-time = "2023-08-29T20:53:08.449Z" },
+    { url = "https://files.pythonhosted.org/packages/00/1e/0529d9dff0b3c8a69276df192cfb24cc35e5ef3304e9301ed5cf148682c6/atheris-2.3.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:005bde4b5a70e998b7fa097e9aa195972dcc2e04092156a0149cff7aa0de970e", size = 30877792, upload-time = "2023-08-29T20:53:11.264Z" },
+]
+
+[[package]]
 name = "base92"
 version = "1.0.3"
 source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "atheris" },
     { name = "black", version = "23.3.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.7.*'" },
     { name = "black", version = "24.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.8.*'" },
     { name = "black", version = "25.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
@@ -33,6 +48,7 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "atheris", specifier = ">=2.3.0" },
     { name = "black", marker = "python_full_version >= '3.7'" },
     { name = "mypy", specifier = ">=0.720" },
 ]

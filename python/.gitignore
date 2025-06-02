@@ -1,6 +1,8 @@
 .tox
 .venv
 base92.egg-info/
+# Ignore atheris output.
+crash-*
 dist/
 exhaustive_encodings.pickle
 *.pyc

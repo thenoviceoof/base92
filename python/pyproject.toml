@@ -24,6 +24,7 @@ Issues = "https://github.com/thenoviceoof/base92/issues"
 
 [dependency-groups]
 dev = [
+    "atheris>=2.3.0",
     # By default uv will look for a black version that is compatible
     # with all >3.0 Python versions, which doesn't exist.
     "black; python_version>='3.7'",

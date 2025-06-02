@@ -76,6 +76,28 @@ To check against the earlier exhaustive examples:
 RUN_EXHAUSTIVE_TESTS=1 uv run tox
 ```
 
+To run this against a fuzzer
+([atheris](https://github.com/google/atheris)):
+
+```
+# Install libfuzzer. Below is an example for Debian/Ubuntu; I just
+# grabbed the biggest number.
+sudo apt install libfuzzer-19-dev
+# Run the fuzzer.
+# Replace the $LIBRARY with one of:
+#  - asan
+#  - ubsan
+# Replace the $FUNCTION with one of:
+#  - pyencode
+#  - pydecode
+LD_PRELOAD="$(uv run python -c "import atheris; print(atheris.path())")/$LIBRARY_with_fuzzer.so" uv run python3 tests/fuzzing.py $FUNCTION -runs=100000
+```
+
+For some reason, `asan` finds a number of memory leaks. It is unclear
+where they could be coming from, especially since the leak size
+changes. My best guess is that the return value is sometimes not being
+freed before leaks are checked.
+
 If you've made changes to the C extension, kindly autoformat it with
 `clang-format`:
 
