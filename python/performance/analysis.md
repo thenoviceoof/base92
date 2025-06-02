@@ -58,3 +58,38 @@ Decoding to 16 chars: 2035.1283800027886 ns
 Decoding to 21 chars: 2662.954659999741 ns
 Decoding to 26 chars: 3276.007969998318 ns
 ```
+
+## Preallocation
+
+Weirdly enough, pre-allocating arrays worsens performance:
+
+```
+Encoding 1 chars: 209.56373999979405 ns
+Encoding 6 chars: 596.0995699933846 ns
+Encoding 11 chars: 995.7045499959349 ns
+Encoding 16 chars: 1376.4785300008953 ns
+Encoding 21 chars: 1760.7565700018313 ns
+Encoding 26 chars: 2149.0727800028253 ns
+Decoding to 1 chars: 310.41119000292383 ns
+Decoding to 6 chars: 884.0166899972246 ns
+Decoding to 11 chars: 1427.115259994025 ns
+Decoding to 16 chars: 1977.6159599950918 ns
+Decoding to 21 chars: 2544.8348600002646 ns
+Decoding to 26 chars: 3080.5307300033746 ns
+```
+
+What about really long inputs? At that point Python arrays might need to be reallocated and then maybe there would be speed savings?
+
+Previous:
+
+```
+Encoding 8192 chars: 1194766.1299927859 ns
+Decoding to 8192 chars: 1983229.3599938569 ns
+```
+
+Preallocating:
+
+```
+Encoding 8192 chars: 1349843.5200017411 ns
+Decoding to 8192 chars: 2168467.5500000594 ns
+```

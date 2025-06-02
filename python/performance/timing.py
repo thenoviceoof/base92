@@ -25,3 +25,9 @@ DECODE_RUNNER = "base92.decode(encoded)"
 for i in range(1, 27, 5):
     time = timeit.timeit(DECODE_RUNNER, DECODE_SETUP.format(i), number=N) / N
     print("Decoding to {} chars: {} ns".format(i, time * 1e9))
+
+# Compare some longer inputs.
+time = timeit.timeit(ENCODE_RUNNER, ENCODE_SETUP.format(16384), number=100) / 100
+print("Encoding {} chars: {} ns".format(8192, time * 1e9))
+time = timeit.timeit(DECODE_RUNNER, DECODE_SETUP.format(16384), number=100) / 100
+print("Decoding to {} chars: {} ns".format(8192, time * 1e9))
