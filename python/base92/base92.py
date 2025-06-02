@@ -59,58 +59,92 @@ def base92_encode(bytstr: bytes) -> str:
     """
     Take a byte string, and encode it in base 92.
     """
-    # Always encode *something*, in case we need to avoid empty strings
     if not bytstr:
         return "~"
-    # Prime the pump.
-    bitstr = ""
-    while len(bitstr) < 13 and bytstr:
-        bitstr += "{:08b}".format(bytstr[0])
-        bytstr = bytstr[1:]
-    resstr = ""
-    while len(bitstr) > 13 or bytstr:
-        i = int(bitstr[:13], 2)
-        resstr += base92_chr(i // 91)
-        resstr += base92_chr(i % 91)
-        bitstr = bitstr[13:]
-        while len(bitstr) < 13 and bytstr:
-            bitstr += "{:08b}".format(bytstr[0])
-            bytstr = bytstr[1:]
-    if bitstr:
-        if len(bitstr) < 7:
-            bitstr += "0" * (6 - len(bitstr))
-            resstr += base92_chr(int(bitstr, 2))
+
+    # Convert bytes to a single integer for bitwise processing
+    bit_buffer = 0
+    bit_count = 0
+    result = []
+
+    for byte in bytstr:
+        bit_buffer = (bit_buffer << 8) | byte
+        bit_count += 8
+
+        # Process 13-bit chunks
+        while bit_count >= 13:
+            # Extract top 13 bits
+            chunk = bit_buffer >> (bit_count - 13)
+            bit_buffer &= (1 << (bit_count - 13)) - 1  # Keep remaining bits
+            bit_count -= 13
+
+            # Encode as two base92 characters
+            result.append(base92_chr(chunk // 91))
+            result.append(base92_chr(chunk % 91))
+
+    # Handle remaining bits
+    if bit_count > 0:
+        if bit_count < 7:
+            # Pad to 6 bits and encode as single character
+            chunk = bit_buffer << (6 - bit_count)
+            result.append(_BASE92_CHARS[chunk])
         else:
-            bitstr += "0" * (13 - len(bitstr))
-            i = int(bitstr, 2)
-            resstr += base92_chr(i // 91)
-            resstr += base92_chr(i % 91)
-    return resstr
+            # Pad to 13 bits and encode as two characters
+            chunk = bit_buffer << (13 - bit_count)
+            result.append(_BASE92_CHARS[chunk // 91])
+            result.append(_BASE92_CHARS[chunk % 91])
+
+    return "".join(result)
 
 
 def base92_decode(bstr: str) -> bytes:
     """
     Take a base92 encoded string, convert it back to a byte string.
     """
-    bitstr = ""
-    resstr = b""
     if bstr == "~":
-        return resstr
-    # we always have pairs of characters
-    for i in range(len(bstr) // 2):
-        x = base92_ord(bstr[2 * i]) * 91 + base92_ord(bstr[2 * i + 1])
-        bitstr += "{:013b}".format(x)
-        while 8 <= len(bitstr):
-            resstr += bytes([int(bitstr[0:8], 2)])
-            bitstr = bitstr[8:]
-    # if we have an extra char, check for extras
-    if len(bstr) % 2 == 1:
-        x = base92_ord(bstr[-1])
-        bitstr += "{:06b}".format(x)
-        while 8 <= len(bitstr):
-            resstr += bytes([int(bitstr[0:8], 2)])
-            bitstr = bitstr[8:]
-    return resstr
+        return b""
+
+    bit_buffer = 0
+    bit_count = 0
+    result = bytearray()
+
+    # Process pairs of characters
+    i = 0
+    while i < len(bstr) - 1:
+        # Decode pair to 13-bit value
+        val1 = base92_ord(bstr[i])
+        val2 = base92_ord(bstr[i + 1])
+
+        chunk = val1 * 91 + val2
+        bit_buffer = (bit_buffer << 13) | chunk
+        bit_count += 13
+
+        # Extract complete bytes
+        while bit_count >= 8:
+            byte_val = bit_buffer >> (bit_count - 8)
+            result.append(byte_val)
+            bit_buffer &= (1 << (bit_count - 8)) - 1
+            bit_count -= 8
+
+        i += 2
+
+    # Handle single remaining character
+    if i < len(bstr):
+        val = base92_ord(bstr[i])
+
+        bit_buffer = (bit_buffer << 6) | val
+        bit_count += 6
+
+        # Extract any complete bytes
+        # We pad the encoding, and each encoded character is smaller
+        # than a byte, so any leftover bits are safe to throw away.
+        while bit_count >= 8:
+            byte_val = bit_buffer >> (bit_count - 8)
+            result.append(byte_val)
+            bit_buffer &= (1 << (bit_count - 8)) - 1
+            bit_count -= 8
+
+    return bytes(result)
 
 
 encode = base92_encode

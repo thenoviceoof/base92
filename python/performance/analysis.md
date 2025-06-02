@@ -41,3 +41,20 @@ Decoding to 16 chars: 4695.564139992712 ns
 Decoding to 21 chars: 6133.847889996105 ns
 Decoding to 26 chars: 7678.189230000497 ns
 ```
+
+## Bitwise Operations
+
+```
+Encoding 1 chars: 148.8203499957308 ns
+Encoding 6 chars: 640.4161599948566 ns
+Encoding 11 chars: 1130.1217399977759 ns
+Encoding 16 chars: 1640.1831800067157 ns
+Encoding 21 chars: 2166.5553500042734 ns
+Encoding 26 chars: 2734.4605999951455 ns
+Decoding to 1 chars: 239.81829000149446 ns
+Decoding to 6 chars: 846.9768000031763 ns
+Decoding to 11 chars: 1446.9558099972346 ns
+Decoding to 16 chars: 2035.1283800027886 ns
+Decoding to 21 chars: 2662.954659999741 ns
+Decoding to 26 chars: 3276.007969998318 ns
+```
