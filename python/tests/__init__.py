@@ -122,9 +122,7 @@ class TestBase92Package(unittest.TestCase):
         self.assertEqual(base92.decode, base92.b92decode)
 
 
-class TestBase92Exhaustive(unittest.TestCase):
-    """Test edge cases and error conditions"""
-
+class TestBase92Characters(unittest.TestCase):
     def test_single_character_strings(self):
         """Test single character encoding/decoding"""
         for i in range(256):
@@ -132,17 +130,3 @@ class TestBase92Exhaustive(unittest.TestCase):
             encoded = base92.encode(char)
             decoded = base92.decode(encoded)
             self.assertEqual(decoded, char, f"Failed for character {i} ({repr(char)})")
-
-    def test_random(self):
-        """Run with many random inputs"""
-        import hashlib
-        import random
-
-        def gen_bytes(s):
-            return hashlib.sha512(s).digest()[: random.randint(2, 64)]
-
-        for i in range(10000):
-            s = gen_bytes(str(random.random()).encode("utf8"))
-            self.assertEqual(
-                s, base92.decode(base92.encode(s)), f"Round trip failed for {s}"
-            )

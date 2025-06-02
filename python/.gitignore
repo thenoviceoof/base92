@@ -2,4 +2,5 @@
 .venv
 base92.egg-info
 dist/
+exhaustive_encodings.pickle
 *.pyc
