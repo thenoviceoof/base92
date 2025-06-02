@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "base92"
-version = "1.0.3"
+dynamic = ["version"]
 authors = [
   {name = "thenoviceoof", email = "thenoviceoof@gmail.com"},
 ]
@@ -30,6 +30,9 @@ dev = [
     "mypy>=0.720",
     "twine>=1.15.0",
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "base92.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]

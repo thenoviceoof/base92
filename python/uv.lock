@@ -23,7 +23,6 @@ wheels = [
 
 [[package]]
 name = "base92"
-version = "1.0.3"
 source = { editable = "." }
 
 [package.dev-dependencies]

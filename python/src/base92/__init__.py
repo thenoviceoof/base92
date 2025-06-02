@@ -11,7 +11,7 @@ Example:
 'hello world'
 """
 
-__version__ = (1, 0, 3)
+__version__ = (2, 0, 0)
 
 try:
     from ._base92compiled import base92_encode, base92_decode
