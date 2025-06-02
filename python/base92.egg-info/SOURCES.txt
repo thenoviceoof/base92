@@ -1,9 +1,0 @@
-LICENSE
-README.md
-pyproject.toml
-base92/__init__.py
-base92/base92.py
-base92.egg-info/PKG-INFO
-base92.egg-info/SOURCES.txt
-base92.egg-info/dependency_links.txt
-base92.egg-info/top_level.txt
