@@ -93,3 +93,44 @@ Preallocating:
 Encoding 8192 chars: 1349843.5200017411 ns
 Decoding to 8192 chars: 2168467.5500000594 ns
 ```
+
+## C Module
+
+Conversion to a C module speeds things up plenty:
+
+```
+Encoding 1 chars: 34.55212998233037 ns
+Encoding 6 chars: 39.064980010152794 ns
+Encoding 11 chars: 44.23369999130955 ns
+Encoding 16 chars: 47.856160017545335 ns
+Encoding 21 chars: 52.99060001561884 ns
+Encoding 26 chars: 56.220330006908625 ns
+Decoding to 1 chars: 25.94210996903712 ns
+Decoding to 6 chars: 34.294940014660824 ns
+Decoding to 11 chars: 38.33541002677521 ns
+Decoding to 16 chars: 41.28248998313211 ns
+Decoding to 21 chars: 44.64327001187485 ns
+Decoding to 26 chars: 47.54287998366635 ns
+```
+
+As a comparison, encoding with base64 has comparable speed:
+
+```
+Base64 1 chars: 38.49617000014405 ns
+Base64 6 chars: 42.65558999577479 ns
+Base64 11 chars: 44.83564000111073 ns
+Base64 16 chars: 48.365460006607464 ns
+Base64 21 chars: 51.094649998049135 ns
+Base64 26 chars: 54.77776000589074 ns
+```
+
+Interestingly, [base85 is just native Python](https://github.com/python/cpython/blob/3.13/Lib/base64.py#L293), so it is comparable to the Python-only base92:
+
+```
+Base85 1 chars: 519.7008499999356 ns
+Base85 6 chars: 657.5137700019695 ns
+Base85 11 chars: 772.7067399900989 ns
+Base85 16 chars: 724.7526600076526 ns
+Base85 21 chars: 1082.6245700081927 ns
+Base85 26 chars: 1182.5178100116318 ns
+```

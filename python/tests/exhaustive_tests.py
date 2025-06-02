@@ -3,7 +3,7 @@ import sys
 import os
 import pickle
 
-from base92 import base92
+import base92
 
 
 class TestBase92Exhaustive(unittest.TestCase):
@@ -28,13 +28,13 @@ class TestBase92Exhaustive(unittest.TestCase):
             encodings = pickle.load(pickle_file)
 
         for source, target in encodings:
-            encoded = base92.encode(source)
+            encoded = base92.base92_encode(source)
             self.assertEqual(
                 target,
                 encoded,
                 f"Does not match golden data: from {source}, expected {target}, got {encoded}",
             )
-            decoded = base92.decode(encoded)
+            decoded = base92.base92_decode(encoded)
             self.assertEqual(
                 source,
                 decoded,

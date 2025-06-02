@@ -9,9 +9,9 @@ commands = [["python3", "-m", "unittest", { replace = "posargs", default = ["tes
 description = "run formatter"
 skip_install = true
 deps = ["black"]
-commands = [["black", { replace = "posargs", default = ["base92", "tests"], extend = true} ]]
+commands = [["black", { replace = "posargs", default = ["."], extend = true} ]]
 
 [env.type]
 description = "run type checks"
 deps = ["mypy"]
-commands = [["mypy", { replace = "posargs", default = ["base92", "tests"], extend = true} ]]
+commands = [["mypy", { replace = "posargs", default = ["src", "tests"], extend = true} ]]

@@ -26,8 +26,6 @@ base92: a library for encoding byte strings
 
 import math
 
-__version__ = (1, 0, 3)
-
 _BASE92_CHARS = (
     ["!"]
     + [chr(ord("#") + i) for i in range(61)]
@@ -41,7 +39,7 @@ def base92_chr(val: int) -> str:
     Map an integer value in the range [0, 91) to a character.
     """
     if val < 0 or val >= 91:
-        raise ValueError("val must be in [0, 91)")
+        raise ValueError("Unexpected base92 encoding failure")
     return _BASE92_CHARS[val]
 
 
@@ -52,7 +50,7 @@ def base92_ord(val: str) -> int:
     try:
         return _BASE92_VALUES[val]
     except KeyError:
-        raise ValueError("val is not a base92 character")
+        raise ValueError("Invalid base92 character")
 
 
 def base92_encode(bytstr: bytes) -> str:
@@ -104,6 +102,9 @@ def base92_decode(bstr: str) -> bytes:
     if bstr == "~":
         return b""
 
+    if len(bstr) == 1:
+        raise ValueError("1 character is not a valid base92 encoding")
+
     bit_buffer = 0
     bit_count = 0
     result = bytearray()
@@ -145,10 +146,3 @@ def base92_decode(bstr: str) -> bytes:
             bit_count -= 8
 
     return bytes(result)
-
-
-encode = base92_encode
-b92encode = base92_encode
-
-decode = base92_decode
-b92decode = base92_decode

@@ -1,6 +1,6 @@
 import random
 import pickle
-from base92 import base92
+import base92
 
 if __name__ == "__main__":
     # Generate many random byte strings.

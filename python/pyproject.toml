@@ -30,5 +30,6 @@ dev = [
     "mypy>=0.720",
 ]
 
-[tool.setuptools]
-packages = ["base92"]
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["base92"]

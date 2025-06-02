@@ -1,6 +1,8 @@
 .tox
 .venv
-base92.egg-info
+base92.egg-info/
 dist/
 exhaustive_encodings.pickle
 *.pyc
+# Ignore the module build.
+*.so
