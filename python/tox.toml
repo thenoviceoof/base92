@@ -1,0 +1,17 @@
+requires = ["tox>=4"]
+env_list = ["format", "type", "3.13", "3.12", "3.11", "3.10", "3.9"]
+
+[env_run_base]
+description = "run unit tests"
+commands = [["python3", "-m", "unittest", { replace = "posargs", default = ["tests"], extend = true }]]
+
+[env.format]
+description = "run formatter"
+skip_install = true
+deps = ["black"]
+commands = [["black", { replace = "posargs", default = ["base92", "tests"], extend = true} ]]
+
+[env.type]
+description = "run type checks"
+deps = ["mypy"]
+commands = [["mypy", { replace = "posargs", default = ["base92", "tests"], extend = true} ]]

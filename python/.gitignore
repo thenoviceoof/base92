@@ -1,4 +1,5 @@
-base92.egg-info
+.tox
 .venv
+base92.egg-info
 dist/
 *.pyc
