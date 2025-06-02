@@ -83,20 +83,20 @@ To run this against a fuzzer
 # Install libfuzzer. Below is an example for Debian/Ubuntu; I just
 # grabbed the biggest number.
 sudo apt install libfuzzer-19-dev
-# Run the fuzzer.
-# Replace the $LIBRARY with one of:
-#  - asan
-#  - ubsan
-# Replace the $FUNCTION with one of:
-#  - pyencode
-#  - pydecode
-LD_PRELOAD="$(uv run python -c "import atheris; print(atheris.path())")/$LIBRARY_with_fuzzer.so" uv run python3 tests/fuzzing.py $FUNCTION -runs=100000
+# Run the fuzzer orchestration script.
+# Trying to run the fuzzer from the repo with uv seems to be a giant
+# hassle: my current best guess is that uv kept trying to re-install
+# the base92 package after installing it once with the right
+# flags. The orchestrator sets up an external venv to do the testing
+# in instead, which we have more manual control over.
+python3 tests/fuzzing/orchestrator.py $TMP_DIRECTORY
 ```
 
 For some reason, `asan` finds a number of memory leaks. It is unclear
 where they could be coming from, especially since the leak size
-changes. My best guess is that the return value is sometimes not being
-freed before leaks are checked.
+changes, implying the outputs are being leaked. Also, if the atheris
+script fails before executing any fuzzing, 2 leaks are still detected;
+I'm treating these as spurious.
 
 If you've made changes to the C extension, kindly autoformat it with
 `clang-format`:
