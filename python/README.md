@@ -99,14 +99,41 @@ script fails before executing any fuzzing, 2 leaks are still detected;
 I'm treating these as spurious.
 
 If you've made changes to the C extension, kindly autoformat it with
-`clang-format`:
+`clang-format`. You may need to source `clang-format` from wherever
+you get your software.
 
 ```
 clang-format -i src/base92/_base92extension.c
 ```
 
-You may need to source `clang-format` from wherever you get your
-software.
+To update the package on pypi:
+
+```
+# Build the source package.
+uv build
+# First, try to upload to the test repo.
+# We only upload the source package (like "base92-2.0.0.tar.gz"). I am
+# deliberately delaying configuring auditwheel/cibuildwheel until later.
+# For more details: https://peps.python.org/pep-0513/#rationale
+uv run twine upload --repository testpypi dist/$TAR_GZ
+# Install from the test repo, using the source package. Ideally you'd
+# do this in a clean venv.
+# Using extra-index-url allows pip to fall back and install
+# dependencies; in practice, nothing is installed, but strangely leaving
+# this option out shows "Could not find a version that satisfies the
+# requirement setuptools>=61.0", even when setuptools already installed
+# and satisfies the conditions.
+pip install --index-url https://test.pypi.org/simple/ base92 --extra-index-url https://pypi.org/simple/
+# Now, do it for real.
+uv run twine upload dist/$TAR_GZ
+# And test again.
+pip install base92
+```
+
+## TODO
+
+- Add character positions to error codes.
+- Use `cibuildwheel` to provide pre-built binary packages.
 
 ## Other languages
 

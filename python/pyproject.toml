@@ -29,6 +29,7 @@ dev = [
     # with all >3.0 Python versions, which doesn't exist.
     "black; python_version>='3.7'",
     "mypy>=0.720",
+    "twine>=1.15.0",
 ]
 
 [tool.setuptools.packages.find]
