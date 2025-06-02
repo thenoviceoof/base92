@@ -28,6 +28,13 @@ import math
 
 __version__ = (1, 0, 3)
 
+_BASE92_CHARS = (
+    ["!"]
+    + [chr(ord("#") + i) for i in range(61)]
+    + [chr(ord("a") + i) for i in range(29)]
+)
+_BASE92_VALUES = {char: idx for idx, char in enumerate(_BASE92_CHARS)}
+
 
 def base92_chr(val: int) -> str:
     """
@@ -35,26 +42,16 @@ def base92_chr(val: int) -> str:
     """
     if val < 0 or val >= 91:
         raise ValueError("val must be in [0, 91)")
-    if val == 0:
-        return "!"
-    elif val <= 61:
-        return chr(ord("#") + val - 1)
-    else:
-        return chr(ord("a") + val - 62)
+    return _BASE92_CHARS[val]
 
 
 def base92_ord(val: str) -> int:
     """
     Map a base92 character to an integer.
     """
-    num = ord(val)
-    if val == "!":
-        return 0
-    elif ord("#") <= num and num <= ord("_"):
-        return num - ord("#") + 1
-    elif ord("a") <= num and num <= ord("}"):
-        return num - ord("a") + 62
-    else:
+    try:
+        return _BASE92_VALUES[val]
+    except KeyError:
         raise ValueError("val is not a base92 character")
 
 
