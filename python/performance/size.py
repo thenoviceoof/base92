@@ -1,5 +1,5 @@
-# Used to derive the size advantage of base92 over base64/base85 which
-# is used in the README.
+# Used to derive the size advantage of base92 over base64/base85,
+# described in docs/encoding.md.
 import base64
 from pprint import pprint
 import base92

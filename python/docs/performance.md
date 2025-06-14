@@ -7,7 +7,7 @@ This performance is measured against
 - The pure Python implementation...
 - After being ported to Python 3...
 - ... But before being uploaded anywhere.
-- As measured by the timing.py script in the same directory.
+- As measured by the timing.py script in /performance.
 
 ```
 Running encode/decode with 100000 iterations over 24 characters
@@ -61,7 +61,7 @@ Decoding to 26 chars: 3276.007969998318 ns
 
 ## Preallocation
 
-Weirdly enough, pre-allocating arrays worsens performance:
+Weirdly enough, pre-allocating arrays worsens performance with short outputs:
 
 ```
 Encoding 1 chars: 209.56373999979405 ns

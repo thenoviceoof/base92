@@ -1,3 +1,27 @@
+/*
+ * Copyright 2025 Nathan Hwang, thenoviceoof
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation files
+ * (the “Software”), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
@@ -28,7 +52,7 @@ static char BASE92_VALUES[256] = (char[]){
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-// Encode bytes to base92 string
+// Encode bytes to base92 bytes.
 static PyObject *base92_encode(PyObject *self, PyObject *args) {
   const char *bytstr;
   Py_ssize_t len;
@@ -41,16 +65,17 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
     return PyBytes_FromString("~");
   }
 
-  // Estimate output size (worst case: each byte becomes ~1.4 characters)
+  // Calculate output size.
   Py_ssize_t max_output_len = 2 * ((len * 8) / 13);
   char remainder = (len * 8) % 13;
-  if (remainder > 0 && remainder < 7) {
-    max_output_len += 1;
-  } else if (remainder >= 7) {
+  if (remainder >= 7) {
     max_output_len += 2;
+  } else if (remainder > 0) {
+    max_output_len += 1;
   }
-  // +1 for terminating \0.
-  char *result = PyMem_Malloc(max_output_len + 1);
+  // No need to allocate +1 for terminating \0. See
+  // https://github.com/python/cpython/blob/fc413ecb8f4bf1c59b29932695e3538548eb1a8a/Objects/bytesobject.c#L88
+  char *result = PyMem_Malloc(max_output_len);
   if (!result) {
     return PyErr_NoMemory();
   }
@@ -62,6 +87,8 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
   // Process input bytes
   for (Py_ssize_t i = 0; i < len; i++) {
     // Previously (unsigned char) was left out, and caused crashes.
+    // In an ideal world we would use unsigned char everywhere, but
+    // the Python interface seems to prefer char instead.
     bit_buffer = (bit_buffer << 8) | (unsigned char)bytstr[i];
     bit_count += 8;
 
@@ -72,8 +99,8 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
       bit_count -= 13;
 
       // Encode as two base92 characters
-      // No bounds check necessary: 2**13 = 8192, 8192 / 91 =
-      // 90.02. All results fall into [0, 91).
+      // No bounds check necessary: 2**13-1 = 8191, 8191 // 91 =
+      // 90. All results fall into [0, 91).
       result[output_pos++] = BASE92_CHARS[chunk / 91];
       result[output_pos++] = BASE92_CHARS[chunk % 91];
     }
@@ -93,7 +120,6 @@ static PyObject *base92_encode(PyObject *self, PyObject *args) {
     }
   }
 
-  result[output_pos] = '\0';
   PyObject *py_result = PyBytes_FromStringAndSize(result, output_pos);
   PyMem_Free(result);
 
@@ -119,7 +145,7 @@ static PyObject *base92_decode(PyObject *self, PyObject *args) {
     return NULL;
   }
 
-  // Estimate output size
+  // Calculate output size.
   Py_ssize_t max_output_len = ((len / 2 * 13) + (len % 2 * 6)) / 8;
   char *result = PyMem_Malloc(max_output_len);
   if (!result) {

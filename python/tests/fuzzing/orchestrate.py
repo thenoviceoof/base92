@@ -4,6 +4,13 @@ import subprocess
 import os
 import os.path
 
+# For some reason atheris cannot run fuzzing more than once per
+# process, hence the subprocess dance we do here.
+
+# For some reason the first run of this script will fail to build the
+# C extension. Trying to debug this usually causes the script to begin
+# working; maybe try running `uv build`?
+
 DIVIDER = """
 
 ##### Fuzzing with {} sanitizer/{} #####
