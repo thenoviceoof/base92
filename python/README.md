@@ -140,3 +140,10 @@ pip install base92
 - The C repo is currently tied to this one.
 - [pixa-pics/Base92](https://github.com/pixa-pics/Base92) is a JS version of this protocol.
 - At some point there was a [Go package](https://pkg.go.dev/github.com/surefootedwi/go-encoding/base92), but the Github repo now 404's (as of 2025-06). Unclear if it was based on my work or not.
+
+## Thanks
+
+- For contributing to PR #7:
+    - tim (appears to no longer have a Github account to link to)
+    - [sscherfke](https://github.com/sscherfke)
+    - [backbord](https://github.com/backbord)
