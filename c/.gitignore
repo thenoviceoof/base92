@@ -1,12 +1,22 @@
-configure
-*status
+# Autoconf generated files/symlinks.
+INSTALL
 Makefile
 Makefile.in
-*.log
-*.o
-*.tar.gz
 aclocal.m4
 autom4te.cache
+compile
+configure
+depcomp
+install-sh
+missing
+test-driver
+
+# Build artifacts.
+*.o
+*.tar.gz
+
+*status
+*.log
 .deps
 base92
 src/base92
