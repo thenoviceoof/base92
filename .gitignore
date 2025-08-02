@@ -1,5 +1,0 @@
-*.pyc
-
-# python distutils cruft
-python/MANIFEST
-python/dist/

@@ -1,0 +1,12 @@
+.tox
+.venv
+base92.egg-info/
+# Ignore pip build artifacts.
+build/
+# Ignore atheris output.
+crash-*
+dist/
+exhaustive_encodings.pickle
+*.pyc
+# Ignore the module build.
+*.so

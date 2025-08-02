@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "base92"
+dynamic = ["version"]
+authors = [
+  {name = "thenoviceoof", email = "thenoviceoof@gmail.com"},
+]
+description = "A library to create base92 encoded strings."
+readme = "README.md"
+requires-python = ">3.0"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/thenoviceoof/base92"
+Issues = "https://github.com/thenoviceoof/base92/issues"
+
+[dependency-groups]
+dev = [
+    # By default uv will look for a black version that is compatible
+    # with all >3.0 Python versions, which doesn't exist.
+    "black; python_version>='3.7'",
+    "mypy>=0.720",
+    "twine>=1.15.0",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "base92.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["base92"]
