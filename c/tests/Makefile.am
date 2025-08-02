@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src
 
 check_PROGRAMS = test_empty chr_encode chr_decode simple_test onechar_test hello_world binary_string lengths
 
