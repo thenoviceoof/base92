@@ -15,6 +15,9 @@ test-driver
 *.o
 *.tar.gz
 
+# Test artifacts.
+tests/*.trs
+
 *status
 *.log
 .deps

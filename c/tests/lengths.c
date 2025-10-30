@@ -35,9 +35,9 @@ int main() {
         for(i = 0; i < LEN; i++) {
                 str[i] = 'a';
                 str[i+1] = 0;
-                if(strcmp(base92encode(str, i+1), strs[i]) != 0)
+                if(strcmp((char*)base92encode((unsigned char*)str, i+1), strs[i]) != 0)
                         exit(1);
-                s = base92decode(strs[i], &j);
+                s = (char*)base92decode((unsigned char*)strs[i], &j);
                 if(strcmp(stringify(s, j), str) != 0)
                         exit(1);
         }
