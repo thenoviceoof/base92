@@ -144,6 +144,5 @@ pip install base92
 ## Thanks
 
 - For contributing to PR #7:
-    - tim (appears to no longer have a Github account to link to)
     - [sscherfke](https://github.com/sscherfke)
     - [backbord](https://github.com/backbord)
