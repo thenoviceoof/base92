@@ -10,8 +10,8 @@
 
 int main() {
         int i;
-        unsigned char *s;
-        unsigned char *str;
+        char *s;
+        char *str;
 
         str = (char*)malloc(16*sizeof(char));
         str[0] = 182;
@@ -31,9 +31,9 @@ int main() {
         str[14] = 195;
         str[15] = 0;
 
-        if(strcmp(base92encode(str, 15), "c)L#O2K}%8Vo_OM3kB:") != 0)
+        if(strcmp((char*)base92encode((unsigned char*)str, 15), "c)L#O2K}%8Vo_OM3kB:") != 0)
                 exit(1);
-        s = base92decode("c)L#O2K}%8Vo_OM3kB:", &i);
+        s = (char*)base92decode((unsigned char*)"c)L#O2K}%8Vo_OM3kB:", &i);
         if(strcmp(stringify(s, i), str) != 0)
                 exit(1);
         return 0;

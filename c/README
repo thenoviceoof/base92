@@ -7,8 +7,8 @@ typeable on a standard US 101-key keyboard.
 INSTALL
 --------------------------------------------------------------------------------
 The C library is built with the GNU development tools
-(automake/autoconf), and can be built in the usual way with a `make
-install`.
+(automake/autoconf), and can be built in the usual way. The included
+`reconf` script will run all the necessary steps.
 
 
 USAGE
@@ -39,6 +39,7 @@ such a string.
 
 THANKS
 --------------------------------------------------------------------------------
+ - sscherfke: finding and fixing type issues.
  - tly1980: Filed issue #3
  - l31g: helped with resolving issue #3
  - seanyeh: helped with resolving issue #3

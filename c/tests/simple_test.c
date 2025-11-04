@@ -11,9 +11,9 @@ int main() {
         int i;
         char *str = "\0";
 
-        if(strcmp(base92encode(str, 1), "!!") != 0)
+        if(strcmp((char*)base92encode((unsigned char*)str, 1), "!!") != 0)
                 exit(1);
-        if(base92decode("!!", &i)[0] != 0)
+        if(base92decode((unsigned char*)"!!", &i)[0] != 0)
                 exit(1);
         return 0;
 }

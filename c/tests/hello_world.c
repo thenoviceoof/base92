@@ -9,10 +9,10 @@
 
 int main() {
         int i;
-        unsigned char* s;
-        if(strcmp(base92encode("hello world", 11), "Fc_$aOTdKnsM*k") != 0)
+        char* s;
+        if(strcmp((char*)base92encode((unsigned char*)"hello world", 11), "Fc_$aOTdKnsM*k") != 0)
                 exit(1);
-        s = base92decode("Fc_$aOTdKnsM*k", &i);
+        s = (char*)base92decode((unsigned char*)"Fc_$aOTdKnsM*k", &i);
         if(strcmp(stringify(s, i), "hello world") != 0)
                 exit(1);
         return 0;

@@ -6,11 +6,11 @@
 
 #include <stdlib.h>
 
-unsigned char *stringify(char *str, int i) {
+char *stringify(char *str, int i) {
         int j;
-        unsigned char *s;
+        char *s;
         
-        s = (unsigned char*)malloc(sizeof(char) * i + 1);
+        s = (char*)malloc(sizeof(char) * i + 1);
         for (j = 0; j < i; j++) {
                 s[j] = str[j];
         }

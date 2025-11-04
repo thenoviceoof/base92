@@ -2,14 +2,20 @@
 echo "### Running make clean..."
 make clean
 make dist-clean
+
+# Fail on further errors. We don't set this at the top, since new
+# environments won't have the autoconf Makefile generated.
+set -e
+
 echo "### Running aclocal..."
 aclocal
 echo "### Running autoconf..."
 autoconf
 echo "### Running automake..."
 automake -a
+# Add in stricter compilation options, which should catch more problems.
 echo "### Running ./configure..."
-./configure
+CPPFLAGS="$CPPFLAGS -Wall -Werror" ./configure
 echo "### Running make..."
 make
 echo "### Running make check..."

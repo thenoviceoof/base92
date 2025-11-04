@@ -10,9 +10,9 @@ int main() {
         int i;
         char *str = "A";
 
-        if(strcmp(base92encode(str, 1), "8q") != 0)
+        if(strcmp((char*)base92encode((unsigned char*)str, 1), "8q") != 0)
                 exit(1);
-        if(base92decode("8q", &i)[0] != 'A')
+        if(base92decode((unsigned char*)"8q", &i)[0] != 'A')
                 exit(1);
         return 0;
 }
